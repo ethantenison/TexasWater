@@ -19,8 +19,8 @@ usethis::use_package("shinydashboard")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module( name = "name_of_module1" ) # Name of the module
-golem::add_module( name = "name_of_module2" ) # Name of the module
+golem::add_module( name = "map" ) # Name of the module
+golem::add_module( name = "selector" ) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
@@ -35,7 +35,7 @@ golem::add_css_file( "custom" )
 
 ## Add internal datasets ----
 ## If you have data in your package
-usethis::use_data_raw( name = "my_dataset", open = FALSE ) 
+usethis::use_data_raw( name = "geographies", open = FALSE ) 
 
 ## Tests ----
 ## Add one line by test you want to create
