@@ -20,12 +20,14 @@
 ## 
 golem::fill_desc(
   pkg_name = "TexasWater", # The Name of the package containing the App 
-  pkg_title = "PKG_TITLE", # The Title of the package containing the App 
-  pkg_description = "PKG_DESC.", # The Description of the package containing the App 
-  author_first_name = "AUTHOR_FIRST", # Your First Name
-  author_last_name = "AUTHOR_LAST", # Your Last Name
-  author_email = "AUTHOR@MAIL.COM", # Your Email
-  repo_url = NULL # The URL of the GitHub Repo (optional) 
+  pkg_title = "TexasWater", # The Title of the package containing the App 
+  pkg_description = "A shiny app created in collaboration with the Texas Water 
+  Foundation and the RGK Center for Philanthropy and Community Service to inform
+  policy makers in the Texas water sector.", # The Description of the package containing the App 
+  author_first_name = "Ethan", # Your First Name
+  author_last_name = "Tenison", # Your Last Name
+  author_email = "tenison.ethan@austin.utexas.edu", # Your Email
+  repo_url = "https://github.com/ethantenison/TexasWater" # The URL of the GitHub Repo (optional) 
 )     
 
 ## Set {golem} options ----
@@ -51,8 +53,9 @@ golem::use_recommended_deps()
 
 ## Favicon ----
 # If you want to change the favicon (default is golem's one)
-golem::use_favicon() # path = "path/to/ico". Can be an online file. 
 golem::remove_favicon()
+golem::use_favicon(path = "./inst/app/www/favicon.ico") # path = "path/to/ico". Can be an online file. 
+
 
 ## Add helper functions ----
 golem::use_utils_ui()
