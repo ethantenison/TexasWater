@@ -7,4 +7,12 @@
 app_server <- function( input, output, session ) {
   # Your application server logic 
   
+  orgs <- readr::read_csv("data-raw/organizations.csv")
+  
+  mod_selector_server("selector")
+  
+  mod_map_server("map")
+  
+  mod_table_server("table", data = orgs)
+  
 }

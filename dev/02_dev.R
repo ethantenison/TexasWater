@@ -15,7 +15,7 @@
 
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
-usethis::use_package("shinywidgets")
+usethis::use_package("reactable")
 
 ## Add modules ----
 ## Create a module infrastructure in R/

@@ -9,7 +9,13 @@
 #' @importFrom shiny NS tagList 
 mod_table_ui <- function(id){
   ns <- NS(id)
+  library(reactable)
   tagList(
+    
+    div(
+      style = "margin: 5px -5px 0 -5px; height: calc(100% - 130px)", 
+      reactable::reactableOutput(ns("table"), height = "100%")
+    )
  
   )
 }
@@ -17,9 +23,16 @@ mod_table_ui <- function(id){
 #' table Server Functions
 #'
 #' @noRd 
-mod_table_server <- function(id){
+mod_table_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    output$table <- renderReactable({
+      
+      
+      reactable(data)
+      
+    })
  
   })
 }

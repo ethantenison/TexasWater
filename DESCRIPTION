@@ -16,6 +16,7 @@ Imports:
     htmltools,
     leaflet,
     processx,
+    reactable,
     readr,
     shiny (>= 1.6.0),
     shinydashboard,
