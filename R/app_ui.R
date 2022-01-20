@@ -10,7 +10,21 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic 
     fluidPage(
-      h1("TexasWater")
+      h1("Texas Water Foundation"),
+      fluidRow(
+        style = "margin: 0; height: 100%",
+        column(
+          width = 4,
+          style = "height: 100%; padding-bottom: 65px",
+          mod_table_ui("table")
+        ),
+        column(
+          width = 8,
+          style = "height: 100%; padding: 0 0 65px 0",
+          mod_map_ui("map"),
+          mod_selector_ui("selector")
+        ),
+      )
     )
   )
 }

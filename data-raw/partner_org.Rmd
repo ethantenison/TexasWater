@@ -1,0 +1,68 @@
+---
+title: "data_clean_partner_orgs"
+author: "Ethan Tenison"
+date: "1/20/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+
+# Creating a dataset of partner orgs
+
+```{r cars}
+library(readxl)
+library(sf)
+library(janitor)
+library(tidyverse)
+library(ggmap)
+```
+
+# TRWA data 
+
+```{r TRWA}
+
+trwa <- read_csv("data-raw/All TRWA Members July 20211314033.csv") |> 
+  clean_names() |> 
+  rename(lon = "map_longitude",
+         lat = "map_latitude",
+         zip_code = "employer_postal_code",
+         organization = "employer_name") |> 
+  mutate(type = "Water Utilities", 
+         address = paste0(employer_address_line1, ", ", employer_city,
+                          ", ", employer_state_abbrev, " ", zip_code)) |> 
+  select(organization, address,lon, lat, type)
+
+```
+
+# Texas Water Governance Survey
+
+```{r TWG}
+
+
+twg <- read_csv("data-raw/Texas Water Governance Survey Master List - Master List.csv") |> 
+  clean_names() |> 
+  filter(!is.na(address)) |> 
+  mutate_geocode(address)
+
+
+write.csv(twg, "data-raw/geocoded_survey.csv")
+
+```
+
+```{r merging}
+
+twg <- twg |> 
+  mutate(type = "Twg") |> 
+  select(organization, address,lon, lat, type)
+
+org <- twg |> 
+  bind_rows(trwa)
+
+write.csv(org, "data-raw/organizations.csv")
+
+```
+

@@ -8,6 +8,7 @@ Description: A shiny app created in collaboration with the Texas Water
 License: MIT + file LICENSE
 Imports: 
     attempt,
+    bslib,
     config (>= 0.3.1),
     DT,
     glue,
@@ -17,7 +18,9 @@ Imports:
     processx,
     readr,
     shiny (>= 1.6.0),
-    shinydashboard
+    shinydashboard,
+    shinythemes,
+    shinyWidgets
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
