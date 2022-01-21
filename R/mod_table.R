@@ -7,9 +7,11 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' 
+#' @import reactable
 mod_table_ui <- function(id){
   ns <- NS(id)
-  library(reactable)
+  
   tagList(
     
     div(
