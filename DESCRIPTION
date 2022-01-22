@@ -19,6 +19,7 @@ Imports:
     processx,
     reactable,
     readr,
+    sf,
     shiny (>= 1.6.0),
     shinydashboard,
     shinythemes,
