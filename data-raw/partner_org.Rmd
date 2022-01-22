@@ -31,10 +31,12 @@ trwa <- read_csv("data-raw/All TRWA Members July 20211314033.csv") |>
          lat = "map_latitude",
          zip_code = "employer_postal_code",
          organization = "employer_name") |> 
-  mutate(type = "Water Utilities", 
+  mutate(
+        sector = "Rural",
+        org_type = "Utilities", 
          address = paste0(employer_address_line1, ", ", employer_city,
                           ", ", employer_state_abbrev, " ", zip_code)) |> 
-  select(organization, address,lon, lat, type)
+  select(organization, address,lon, lat, sector, org_type)
 
 ```
 
@@ -45,7 +47,8 @@ trwa <- read_csv("data-raw/All TRWA Members July 20211314033.csv") |>
 
 twg <- read_csv("data-raw/Texas Water Governance Survey Master List - Master List.csv") |> 
   clean_names() |> 
-  filter(!is.na(address)) |> 
+  filter(!is.na(sector),
+         !is.na(address)) |> 
   mutate_geocode(address)
 
 
@@ -55,14 +58,36 @@ write.csv(twg, "data-raw/geocoded_survey.csv")
 
 ```{r merging}
 
-twg <- twg |> 
-  mutate(type = "Twg") |> 
-  select(organization, address,lon, lat, type)
+
+twg <- read_csv("data-raw/geocoded_survey.csv") |> 
+  select(organization, address,lon, lat, sector, org_type)
 
 org <- twg |> 
   bind_rows(trwa)
 
 write.csv(org, "data-raw/organizations.csv")
+
+```
+
+
+```{r data_4_table}
+
+df <- read_csv("data-raw/organizations.csv") |> 
+  select(organization, address, sector, org_type) |> 
+  mutate(search = sector) |> 
+  rename(Organization = organization, 
+         Address = address,
+         Sector = sector,
+         Type = org_type) |> 
+  arrange(Organization)
+
+df2 <- df |> 
+  mutate(search = "All")
+
+df <- df |> 
+  bind_rows(df2)
+
+write.csv(df, "data-raw/org_table.csv", row.names = FALSE)
 
 ```
 

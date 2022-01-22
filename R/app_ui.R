@@ -12,7 +12,6 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic 
     fluidPage(
-      h1("Texas Water Foundation"),
       fluidRow(
         style = "margin: 0; height: 100%",
         column(
