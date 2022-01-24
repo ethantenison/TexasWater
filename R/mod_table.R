@@ -42,7 +42,6 @@ mod_table_ui <- function(id){
       column(
         width = 12,
         style = "    margin: -5px 0px 5px 0",
-        textOutput(ns("test")),
         selectizeInput(
           ns("search"), 
           label = NULL, 

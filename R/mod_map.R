@@ -14,8 +14,26 @@ mod_map_ui <- function(id, height){
   ns <- NS(id)
   tagList(
     
-    leafletOutput(ns("map"), height = height)
+    leafletOutput(ns("map"), height = height),
+    absolutePanel(top = 10, right = 10,
+                  fluidRow(
+                    column(
+                      width = 5,
+                      style = "margin: 7px 0 0 0; font-size: 14px;",
+                      div(
+                        style = "float:right",
+                        pickerInput(
+                          ns("admin"), 
+                          label = NULL, 
+                          choices = c("Aquifers","GCDs", "Rivers",
+                                      "River Basins", "RWPAs"), 
+                          multiple  = FALSE, selected = "River Basins",
+                          width = "200px"
+                        )
+                      )
+                  ))
  
+  )
   )
 }
     
@@ -26,27 +44,33 @@ mod_map_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    map_data <- readRDS("./data-raw/rb.rds")
     
-    pal <- reactive({
-        colorFactor(
-          palette = "Set1",
-          reverse = FALSE,
-          domain = map_data$basin_name,
-          na.color=rgb(0,0,0,0)
-        )
-        })
+    # Admin Area selection -----------------------------------------------------
+    
+    # reactive to select geographic data
+    map_data <- reactive({
+      if (input$admin == "River Basins") {
+        readRDS("./data-raw/rb.rds")
+      }
+    })
+    
+    
+    # pal <- reactive({
+    #     colorFactor(
+    #       palette = "Set1",
+    #       reverse = FALSE,
+    #       domain = map_data$basin_name,
+    #       na.color=rgb(0,0,0,0)
+    #     )
+    #     })
     
     output$map <- renderLeaflet({
       
-      leaflet(map_data, options = leafletOptions(zoomControl = FALSE)) |>
-        setView(lng = -97.75242943917551,
-                lat = 30.327729034791303,
-                zoom = 5)  |>
+      leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
+        setView(lng = -99.808835,
+                lat = 30.997210,
+                zoom = 6)  |>
         addProviderTiles(providers$CartoDB.Positron) |>
-        htmlwidgets::onRender("function(el, x) {
-        L.control.zoom({ position: 'topright' }).addTo(this)
-    }") |> 
         clearShapes() |>
         clearControls() |>
         addPolygons(
@@ -55,7 +79,7 @@ mod_map_server <- function(id){
           smoothFactor = 0.5,
           opacity = 0,
           fillOpacity = 0.7,
-          fillColor = ~ pal()(map_data$basin_name),
+          #fillColor = ~ pal()(map_data$basin_name),
           highlightOptions = highlightOptions(
             color = "white",
             weight = 2,
