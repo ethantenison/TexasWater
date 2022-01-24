@@ -11,6 +11,7 @@
 #' @import shinyWidgets
 #' @import readr
 #' @import dplyr
+#' @importFrom stringr str_detect
 mod_table_ui <- function(id){
   ns <- NS(id)
   
@@ -19,10 +20,10 @@ mod_table_ui <- function(id){
       style = "margin: 0px -12px 0 -12px",
       column(
         style = "margin: 0px 0 0 0; font-size: 14px;",
-        width = 8,
+        width = 7,
       h3("Texas Water")),
       column(
-        width = 4,
+        width = 5,
         style = "margin: 7px 0 0 0; font-size: 14px;",
         div(
           style = "float:right",
@@ -41,6 +42,7 @@ mod_table_ui <- function(id){
       column(
         width = 12,
         style = "    margin: -5px 0px 5px 0",
+        textOutput(ns("test")),
         selectizeInput(
           ns("search"), 
           label = NULL, 
@@ -66,19 +68,51 @@ mod_table_server <- function(id){
     
     orgs <- readr::read_csv("data-raw/org_table.csv")
     
-    werk <- reactive({
+    
+    # Sector selection ---------------------------------------------------------
+    
+    # reactive to store choices of the org input field
+    org_choices <- reactive({
+      req(orgs$Sector)
+      d <- orgs %>% filter(search == input$sector) %>% arrange(Organization)
+      d$Organization
+    })
+    
+    # populate the selectizeInput choices
+    observe({
+      req(org_choices())
+      current_selected <- isolate(input$search)
+      updateSelectizeInput(session, "search", choices = org_choices(), selected = current_selected, server = TRUE)
+    })
+    
+    # Data for table 
+    to_table <- reactive({
       
-      orgs |>  
-        dplyr::filter(search == input$sector) |> 
-        select(-c(search))
-  
+      req(orgs$Organization, orgs$search)
+      
+      if(input$search == "") {
+        
+        orgs |>  
+          dplyr::filter(search == input$sector) |> 
+          select(-c(search))
+        
+      } else {
+        
+        orgs |>  
+          dplyr::filter(search == input$sector) |> 
+          select(-c(search)) |> 
+          filter(str_detect(Organization, input$search))
+      }
+      
       
     })
+    
+    # Render Table ------------------------------------------------------------
     
     output$table <- renderReactable({
       
       
-      reactable(werk())
+      reactable(to_table())
       
     })
  
