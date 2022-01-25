@@ -51,40 +51,83 @@ mod_map_server <- function(id){
     map_data <- reactive({
       if (input$admin == "River Basins") {
         readRDS("./data-raw/rb.rds")
+      } else if (input$admin == "GCDs") {
+        readRDS("./data-raw/gcd.rds")
+      } else if (input$admin == "Rivers") {
+        readRDS("./data-raw/riv.rds")
+      } else if (input$admin == "Aquifers") {
+        readRDS("./data-raw/aqu.rds")
+      } else if (input$admin == "River Basins") {
+        readRDS("./data-raw/rb.rds")
+      } else if (input$admin == "RWPAs") {
+        readRDS("./data-raw/rwpa.rds")
       }
     })
     
     
-    # pal <- reactive({
-    #     colorFactor(
-    #       palette = "Set1",
-    #       reverse = FALSE,
-    #       domain = map_data$basin_name,
-    #       na.color=rgb(0,0,0,0)
-    #     )
-    #     })
+    
+     pal <- reactive({
+         colorFactor(
+           palette = "Set1",
+          reverse = FALSE,
+           domain = map_data()$name,
+           na.color=rgb(0,0,0,0)
+         )
+         })
     
     output$map <- renderLeaflet({
       
-      leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
-        setView(lng = -99.808835,
-                lat = 30.997210,
-                zoom = 6)  |>
-        addProviderTiles(providers$CartoDB.Positron) |>
-        clearShapes() |>
-        clearControls() |>
-        addPolygons(
-          color = "#444444",
-          weight = 1,
-          smoothFactor = 0.5,
-          opacity = 0,
-          fillOpacity = 0.7,
-          #fillColor = ~ pal()(map_data$basin_name),
-          highlightOptions = highlightOptions(
-            color = "white",
-            weight = 2,
-            bringToFront = TRUE
-          ))
+      if(input$admin == "Rivers"){
+        
+        leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
+          setView(lng = -99.808835,
+                  lat = 30.997210,
+                  zoom = 6)  |>
+          addProviderTiles(providers$CartoDB.Positron) |>
+          clearShapes() |>
+          clearControls() |>
+          addPolylines(
+            color = "blue",
+            weight = 1,
+            smoothFactor = 0.5,
+            opacity = 0.7,
+            fillOpacity = 0.7,
+            fillColor = ~ pal()(map_data()$name),
+            highlightOptions = highlightOptions(
+              color = "white",
+              weight = 2,
+              bringToFront = TRUE
+            ),
+            popup = map_data()$name,
+            label = map_data()$name)
+        
+        
+      } else {
+        leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
+          setView(lng = -99.808835,
+                  lat = 30.997210,
+                  zoom = 6)  |>
+          addProviderTiles(providers$CartoDB.Positron) |>
+          clearShapes() |>
+          clearControls() |>
+          addPolygons(
+            color = "#444444",
+            weight = 1,
+            smoothFactor = 0.5,
+            opacity = 0,
+            fillOpacity = 0.7,
+            fillColor = ~ pal()(map_data()$name),
+            highlightOptions = highlightOptions(
+              color = "white",
+              weight = 2,
+              bringToFront = TRUE
+            ),
+            popup = map_data()$name,
+            label = map_data()$name)
+        
+        
+      }
+      
       
       
     })

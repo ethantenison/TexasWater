@@ -1,0 +1,113 @@
+---
+title: "geographies"
+author: "Ethan Tenison"
+date: "1/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+
+# Creating a dataset of geographies 
+
+```{r cars}
+library(readxl)
+library(sf)
+library(janitor)
+library(tidyverse)
+library(rmapshaper)
+```
+
+# GCDs
+
+Crazy oblong boundaries 
+
+```{r gcds, echo=FALSE}
+gcd <-
+  st_read("data-raw/shapefiles/GCD_Shapefiles/TWDB_GCD_NOV2019.shp") |> 
+  clean_names() |>
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) |> 
+  select(shortnam, geometry) |> 
+  rename(name = shortnam)
+
+saveRDS(gcd, "data-raw/gcd.rds")
+
+plot(gcd['name'])
+```
+
+# Major Aquifers
+
+```{r aqui}
+
+aqu <-
+  st_read("data-raw/shapefiles/major_aquifers/NEW_major_aquifers_dd.shp") |> 
+  clean_names() |>
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) |> 
+  select(aq_name, geometry) |> 
+  rename(name=aq_name)
+
+saveRDS(aqu, "data-raw/aqu.rds")
+
+plot(aqu['name'])
+
+```
+
+# Riverbasins
+
+```{r river_basins}
+
+rb <-
+  st_read("data-raw/shapefiles/Major_River_Basins_Shapefile/TWDB_MRBs_2014.shp") |> 
+  clean_names() |>
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) |> 
+  select(basin_name, geometry) |> 
+  rename(name = basin_name)
+
+saveRDS(rb, "data-raw/rb.rds")
+
+plot(rb['name'])
+
+```
+
+# Major Rivers
+
+```{r rivers}
+
+riv <-
+  st_read("data-raw/shapefiles/Major_Rivers_dd83/MajorRivers_dd83.shp") |> 
+  clean_names() |>
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.001,keep_shapes = FALSE) |> 
+  select(name, geometry)
+
+saveRDS(riv, "data-raw/riv.rds")
+
+plot(riv['name'])
+
+```
+
+# Regional Water Planning Areas
+
+```{r rwpa}
+
+rwpa <-
+  st_read("data-raw/shapefiles/RWPA_Shapefile/TWDB_RWPAs_2014.shp") |> 
+  clean_names() |>
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) |> 
+  select(reg_name, geometry) |> 
+  rename(name = reg_name)
+  
+
+saveRDS(rwpa, "data-raw/rwpa.rds")
+
+plot(rwpa['name'])
+
+```
+
