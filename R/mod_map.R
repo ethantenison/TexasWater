@@ -25,7 +25,7 @@ mod_map_ui <- function(id, height){
                         pickerInput(
                           ns("admin"), 
                           label = NULL, 
-                          choices = c("Aquifers","GCDs", "Rivers",
+                          choices = c("Aquifers","Counties", "GCDs", "Rivers",
                                       "River Basins", "RWPAs"), 
                           multiple  = FALSE, selected = "River Basins",
                           width = "200px"
@@ -40,7 +40,7 @@ mod_map_ui <- function(id, height){
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id){
+mod_map_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -61,6 +61,8 @@ mod_map_server <- function(id){
         readRDS("./data-raw/rb.rds")
       } else if (input$admin == "RWPAs") {
         readRDS("./data-raw/rwpa.rds")
+      } else if (input$admin == "Counties") {
+        readRDS("./data-raw/counties.rds")
       }
     })
     
@@ -74,60 +76,108 @@ mod_map_server <- function(id){
            na.color=rgb(0,0,0,0)
          )
          })
+     
+     pal_org <- reactive({
+       colorFactor(
+         palette = "Set1",
+         reverse = FALSE,
+         domain = data()$Type,
+         na.color=rgb(0,0,0,0)
+       )
+     })
+     
+     gon_line <- function(x){
+       
+       if(input$admin == "Rivers"){ 
+         addPolylines(
+         color = "lightblue",
+         weight = 3,
+         smoothFactor = 0.5,
+         opacity = 0.7,
+         fillOpacity = 0.7,
+         fillColor = ~ pal()(map_data()$name),
+         highlightOptions = highlightOptions(
+           color = "white",
+           weight = 2,
+           bringToFront = TRUE
+         ),
+         popup = map_data()$name,
+         label = map_data()$name)
+       } else {
+         addPolygons(
+           color = ~ pal()(map_data()$name),
+           weight = 2,
+           smoothFactor = 0.5,
+           opacity = 0.7,
+           fillOpacity = 0.7,
+           fillColor = ~ pal()(map_data()$name),
+           highlightOptions = highlightOptions(
+             color = "white",
+             weight = 2,
+             stroke = 4,
+             bringToFront = NULL
+           ),
+           popup = map_data()$name,
+           label = map_data()$name)
+         }
+
+     }
     
     output$map <- renderLeaflet({
       
-      if(input$admin == "Rivers"){
-        
         leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
           setView(lng = -99.808835,
                   lat = 30.997210,
                   zoom = 6)  |>
           addProviderTiles(providers$CartoDB.Positron) |>
           clearShapes() |>
-          clearControls() |>
-          addPolylines(
-            color = "blue",
-            weight = 1,
-            smoothFactor = 0.5,
-            opacity = 0.7,
-            fillOpacity = 0.7,
-            fillColor = ~ pal()(map_data()$name),
-            highlightOptions = highlightOptions(
-              color = "white",
+          clearControls() %>%
+        {if(input$admin == "Rivers") addPolylines(
+          map = .,
+          color = "#2389da",
+          weight = 3,
+          smoothFactor = 0.5,
+          opacity = 0.7,
+          fillOpacity = 0.7,
+          fillColor = ~ pal()(map_data()$name),
+          highlightOptions = highlightOptions(
+            color = "white",
+            weight = 2,
+            bringToFront = TRUE
+          ),
+          popup = map_data()$name,
+          label = map_data()$name) else 
+            addPolygons(
+              map  = .,
+              color = ~ pal()(map_data()$name),
               weight = 2,
-              bringToFront = TRUE
-            ),
-            popup = map_data()$name,
-            label = map_data()$name)
+              smoothFactor = 0.5,
+              opacity = 0.7,
+              fillOpacity = 0.7,
+              fillColor = ~ pal()(map_data()$name),
+              highlightOptions = highlightOptions(
+                color = "white",
+                weight = 2,
+                stroke = 4,
+                bringToFront = NULL
+              ),
+              popup = map_data()$name,
+              label = map_data()$name)
+            
+          } %>% 
+          clearMarkers() |>#you have to clear previously drawn markers
+          addCircleMarkers(data = data(), lng =  ~ lon,lat =  ~ lat,
+                           stroke = FALSE,
+                           weight = 3,
+                           opacity = .7,
+                           color = "black",
+                           fillColor = ~ "black",
+                           fillOpacity = .7,
+                           radius = 4,
+                           label = ~paste0(data()$Organization),
+                           popup = ~paste0(data()$Organization)
+                           )
         
-        
-      } else {
-        leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
-          setView(lng = -99.808835,
-                  lat = 30.997210,
-                  zoom = 6)  |>
-          addProviderTiles(providers$CartoDB.Positron) |>
-          clearShapes() |>
-          clearControls() |>
-          addPolygons(
-            color = "#444444",
-            weight = 1,
-            smoothFactor = 0.5,
-            opacity = 0,
-            fillOpacity = 0.7,
-            fillColor = ~ pal()(map_data()$name),
-            highlightOptions = highlightOptions(
-              color = "white",
-              weight = 2,
-              bringToFront = TRUE
-            ),
-            popup = map_data()$name,
-            label = map_data()$name)
-        
-        
-      }
-      
       
       
     })
@@ -140,3 +190,19 @@ mod_map_server <- function(id){
     
 ## To be copied in the server
 # mod_map_server("map_ui_1")
+
+
+# addPolylines(
+#   color = "lightblue",
+#   weight = 3,
+#   smoothFactor = 0.5,
+#   opacity = 0.7,
+#   fillOpacity = 0.7,
+#   fillColor = ~ pal()(map_data()$name),
+#   highlightOptions = highlightOptions(
+#     color = "white",
+#     weight = 2,
+#     bringToFront = TRUE
+#   ),
+#   popup = map_data()$name,
+#   label = map_data()$name)

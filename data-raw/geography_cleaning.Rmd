@@ -111,3 +111,22 @@ plot(rwpa['name'])
 
 ```
 
+# Counties
+
+```{r county}
+
+county <-
+  st_read("data-raw/shapefiles/Texas_County_Boundaries_Detailed-shp/County.shp") |> 
+  clean_names() |>
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) |> 
+  select(cnty_nm, geometry) |> 
+  rename(name = cnty_nm)
+  
+
+saveRDS(county, "data-raw/counties.rds")
+
+plot(county['name'])
+
+```
+

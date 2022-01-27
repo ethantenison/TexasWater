@@ -21,7 +21,16 @@ mod_table_ui <- function(id){
       column(
         style = "margin: 0px 0 0 0; font-size: 14px;",
         width = 7,
-      h3("Texas Water")),
+        prettyRadioButtons(
+          inputId = ns("search_control"),
+          choices = c("Zip", "County", "Organization"),
+          selected = "Zip",
+          label = "",
+          width = "auto",
+          animation = "jelly",
+          inline = TRUE
+        )
+      ),
       column(
         width = 5,
         style = "margin: 7px 0 0 0; font-size: 14px;",
@@ -65,7 +74,7 @@ mod_table_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    orgs <- readr::read_csv("data-raw/org_table.csv")
+    orgs <- readr::read_csv("data-raw/organization.csv")
     
     
     # Sector selection ---------------------------------------------------------
@@ -74,14 +83,14 @@ mod_table_server <- function(id){
     org_choices <- reactive({
       req(orgs$Sector)
       d <- orgs %>% filter(search == input$sector) %>% arrange(Organization)
-      d$Organization
+      d
     })
     
     # populate the selectizeInput choices
     observe({
       req(org_choices())
       current_selected <- isolate(input$search)
-      updateSelectizeInput(session, "search", choices = org_choices(), selected = current_selected, server = TRUE)
+      updateSelectizeInput(session, "search", choices = org_choices()$Organization, selected = current_selected, server = TRUE)
     })
     
     # Data for table 
@@ -93,13 +102,13 @@ mod_table_server <- function(id){
         
         orgs |>  
           dplyr::filter(search == input$sector) |> 
-          select(-c(search))
+          select(-c(search, lon, lat))
         
       } else {
         
         orgs |>  
           dplyr::filter(search == input$sector) |> 
-          select(-c(search)) |> 
+          select(-c(search, lon, lat)) |> 
           filter(str_detect(Organization, input$search))
       }
       
@@ -114,6 +123,8 @@ mod_table_server <- function(id){
       reactable(to_table())
       
     })
+    
+    return(org_choices)
  
   })
 }

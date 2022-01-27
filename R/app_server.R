@@ -12,8 +12,9 @@ app_server <- function( input, output, session ) {
   
   mod_selector_server("selector")
   
-  mod_map_server("map")
   
-  mod_table_server("table")
+  table <- mod_table_server("table")
   
+  mod_map_server("map", table)
+
 }

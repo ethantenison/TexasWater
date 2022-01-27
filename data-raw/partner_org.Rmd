@@ -56,6 +56,7 @@ write.csv(twg, "data-raw/geocoded_survey.csv")
 
 ```
 
+# Merging
 ```{r merging}
 
 
@@ -81,7 +82,7 @@ write.csv(org, "data-raw/organizations.csv")
 ```{r data_4_table}
 
 df <- read_csv("data-raw/organizations.csv") |> 
-  select(organization, address, sector, org_type) |> 
+  select(organization, address, sector, org_type, lon, lat) |> 
   mutate(search = sector) |> 
   rename(Organization = organization, 
          Address = address,
@@ -95,7 +96,7 @@ df2 <- df |>
 df <- df |> 
   bind_rows(df2)
 
-write.csv(df, "data-raw/org_table.csv", row.names = FALSE)
+write.csv(df, "data-raw/organization.csv", row.names = FALSE)
 
 ```
 
