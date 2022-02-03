@@ -22,7 +22,7 @@ app_ui <- function(request) {
         column(
           width = 8,
           style = "height: 100%; padding: 0 0 65px 0",
-          mod_map_ui("map", height = "900"),
+          mod_map_ui("map", height = "750"),
           mod_selector_ui("selector")
         ),
       )

@@ -24,7 +24,7 @@ mod_table_ui <- function(id){
         width = 8,
         prettyRadioButtons(
           inputId = ns("search_control"),
-          choices = c("County", "Name"),
+          choices = c("Address", "County", "Name"),
           selected = "Name",
           label = "",
           width = "auto",
