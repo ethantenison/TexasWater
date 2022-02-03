@@ -75,6 +75,7 @@ write.csv(org, "data-raw/organizations.csv")
 
 ```
 
+# Add county
 
 ```{r add_county}
 
@@ -103,7 +104,30 @@ org <- org |>
 
 ```
 
+# Zip Radius 
 
+```{r zipradius}
+
+library(ggmap)
+
+#zips <- revgeocode(org, output = "all")
+
+test <- head(org)
+
+expanded <- map2_dfr(test$lon, test$lat, ~revgeocode(c(.x, .y), output = "all"))
+
+
+df3 <- org %>%
+  rowwise() %>%
+  do(revgeocode(c(.$lon[1], .$lat[1]), output = "all")) %>%
+  ungroup()
+df3
+
+```
+
+
+
+# Datatable
 
 ```{r data_4_table}
 
