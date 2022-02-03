@@ -46,6 +46,8 @@ trwa <- read_csv("data-raw/All TRWA Members July 20211314033.csv") |>
 
 # Texas Water Governance Survey
 
+**ONLY RUN IF YOU NEED TO RERUN GEOCODING**
+
 ```{r TWG}
 
 
@@ -106,13 +108,14 @@ org <- org |>
 
 # Zip Radius 
 
-```{r zipradius}
+```{r zipradius, eval=FALSE, include=FALSE}
 
 library(ggmap)
 
 #zips <- revgeocode(org, output = "all")
 
 test <- head(org)
+
 
 expanded <- map2_dfr(test$lon, test$lat, ~revgeocode(c(.x, .y), output = "all"))
 
@@ -131,20 +134,22 @@ df3
 
 ```{r data_4_table}
 
-df <- read_csv("data-raw/organizations.csv") |> 
-  select(organization, address, sector, org_type, lon, lat) |> 
+df <- org |> 
+  select(organization, address, county,sector, org_type, lon, lat) |> 
   mutate(search = sector) |> 
   rename(Organization = organization, 
          Address = address,
          Sector = sector,
-         Type = org_type) |> 
+         Type = org_type,
+         County = county) |> 
   arrange(Organization)
 
 df2 <- df |> 
   mutate(search = "All")
 
 df <- df |> 
-  bind_rows(df2)
+  bind_rows(df2) |> 
+  unnest(County)
 
 write.csv(df, "data/organization.csv", row.names = FALSE)
 

@@ -25,7 +25,7 @@ mod_table_ui <- function(id){
         prettyRadioButtons(
           inputId = ns("search_control"),
           choices = c("County", "Name"),
-          selected = "County",
+          selected = "Name",
           label = "",
           width = "auto",
           animation = "jelly",
@@ -91,7 +91,24 @@ mod_table_server <- function(id){
     observe({
       req(org_choices())
       current_selected <- isolate(input$search)
-      updateSelectizeInput(session, "search", choices = org_choices()$Organization, selected = current_selected, server = TRUE)
+      if (input$search_control == "Name") {
+        updateSelectizeInput(
+          session,
+          "search",
+          choices = org_choices()$Organization,
+          selected = current_selected,
+          server = TRUE
+        )
+      } else if (input$search_control == "County") {
+        updateSelectizeInput(
+          session,
+          "search",
+          choices = org_choices()$County,
+          selected = current_selected,
+          server = TRUE
+        )
+        
+      }
     })
     
     # Data for table 
@@ -102,15 +119,18 @@ mod_table_server <- function(id){
       if(input$search == "") {
         
         orgs |>  
-          dplyr::filter(search == input$sector) |> 
-          select(-c(search, lon, lat))
+          dplyr::filter(search == input$sector)  
         
-      } else {
+      } else if (input$search != "" & input$search_control == "Name"){
         
         orgs |>  
           dplyr::filter(search == input$sector) |> 
-          select(-c(search, lon, lat)) |> 
           filter(str_detect(Organization, input$search))
+      } else if (input$search != "" & input$search_control == "County"){
+        
+        orgs |>  
+          dplyr::filter(search == input$sector) |> 
+          filter(str_detect(County, input$search))
       }
       
       
@@ -149,7 +169,10 @@ mod_table_server <- function(id){
                 onClick = onclick_js,
                 columns = list(
                  Organization = colDef(minWidth = 50),  # overrides the default
-                 Address = colDef(show = F)
+                 Address = colDef(show = F),
+                 lon = colDef(show = F),
+                 lat = colDef(show = F),
+                 search = colDef(show = F)
                 ),
                 )
       
