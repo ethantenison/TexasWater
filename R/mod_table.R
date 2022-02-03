@@ -12,6 +12,7 @@
 #' @import readr
 #' @import dplyr
 #' @importFrom stringr str_detect
+#' @import glue
 mod_table_ui <- function(id){
   ns <- NS(id)
   
@@ -20,11 +21,11 @@ mod_table_ui <- function(id){
       style = "margin: 0px -12px 0 -12px",
       column(
         style = "margin: 0px 0 0 0; font-size: 14px;",
-        width = 7,
+        width = 8,
         prettyRadioButtons(
           inputId = ns("search_control"),
-          choices = c("Zip", "County", "Organization"),
-          selected = "Zip",
+          choices = c("County", "Name"),
+          selected = "County",
           label = "",
           width = "auto",
           animation = "jelly",
@@ -32,7 +33,7 @@ mod_table_ui <- function(id){
         )
       ),
       column(
-        width = 5,
+        width = 4,
         style = "margin: 7px 0 0 0; font-size: 14px;",
         div(
           style = "float:right",
@@ -74,7 +75,7 @@ mod_table_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    orgs <- readr::read_csv("data-raw/organization.csv")
+    orgs <- readr::read_csv("data/organization.csv")
     
     
     # Sector selection ---------------------------------------------------------
@@ -120,7 +121,37 @@ mod_table_server <- function(id){
     output$table <- renderReactable({
       
       
-      reactable(to_table())
+      onclick_js <- JS(
+        glue(
+          "function(rowInfo, colInfo) {
+          // Only handle click events on the 'mb' column
+          if (colInfo.id !== 'Organization') {
+            return
+          }
+      
+          // Send the click event to Shiny, which will be available in input$show_details
+          // Note that the row index starts at 0 in JavaScript, so we add 1
+          if (window.Shiny) {
+            Shiny.setInputValue('<<< ns('show_details') >>>', { index: rowInfo.index + 1, rnd: Math.random() })
+          }
+        }", .open = "<<<", .close = ">>>")
+      )
+      
+      
+      reactable(to_table(),
+                compact = TRUE, 
+                defaultColDef = colDef(minWidth = 20, footerStyle = "font-weight: bold"),
+                highlight = TRUE,
+                defaultPageSize = 20,
+                paginationType = "simple",
+                # searchable = TRUE,
+                wrap = TRUE,
+                onClick = onclick_js,
+                columns = list(
+                 Organization = colDef(minWidth = 50),  # overrides the default
+                 Address = colDef(show = F)
+                ),
+                )
       
     })
     

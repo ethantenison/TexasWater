@@ -34,7 +34,8 @@ gcd <-
   select(shortnam, geometry) |> 
   rename(name = shortnam)
 
-saveRDS(gcd, "data-raw/gcd.rds")
+saveRDS(gcd, "data/gcd.rds")
+
 
 plot(gcd['name'])
 ```
@@ -51,7 +52,8 @@ aqu <-
   select(aq_name, geometry) |> 
   rename(name=aq_name)
 
-saveRDS(aqu, "data-raw/aqu.rds")
+saveRDS(aqu, "data/aqu.rds")
+
 
 plot(aqu['name'])
 
@@ -69,7 +71,7 @@ rb <-
   select(basin_name, geometry) |> 
   rename(name = basin_name)
 
-saveRDS(rb, "data-raw/rb.rds")
+saveRDS(rb, "data/rb.rds")
 
 plot(rb['name'])
 
@@ -86,7 +88,7 @@ riv <-
   ms_simplify(keep = 0.001,keep_shapes = FALSE) |> 
   select(name, geometry)
 
-saveRDS(riv, "data-raw/riv.rds")
+saveRDS(riv, "data/riv.rds")
 
 plot(riv['name'])
 
@@ -105,7 +107,7 @@ rwpa <-
   rename(name = reg_name)
   
 
-saveRDS(rwpa, "data-raw/rwpa.rds")
+saveRDS(rwpa, "data/rwpa.rds")
 
 plot(rwpa['name'])
 
@@ -124,7 +126,7 @@ county <-
   rename(name = cnty_nm)
   
 
-saveRDS(county, "data-raw/counties.rds")
+saveRDS(county, "data/counties.rds")
 
 plot(county['name'])
 

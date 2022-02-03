@@ -1,0 +1,13 @@
+name: TexasWater
+title: TexasWater
+username:
+account: rgk-center
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5567584
+bundleId: 5536188
+url: https://rgk-center.shinyapps.io/TexasWater/
+when: 1643830511.91789
+lastSyncTime: 1643830511.91789
+asMultiple: FALSE
+asStatic: FALSE

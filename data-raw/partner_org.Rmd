@@ -19,6 +19,7 @@ library(sf)
 library(janitor)
 library(tidyverse)
 library(ggmap)
+library(zipcodeR)
 ```
 
 # TRWA data 
@@ -34,9 +35,12 @@ trwa <- read_csv("data-raw/All TRWA Members July 20211314033.csv") |>
   mutate(
         sector = "Rural",
         org_type = "Utilities", 
-         address = paste0(employer_address_line1, ", ", employer_city,
-                          ", ", employer_state_abbrev, " ", zip_code)) |> 
-  select(organization, address,lon, lat, sector, org_type)
+        address = paste0(employer_address_line1, ", ", employer_city,
+                          ", ", employer_state_abbrev, " ", zip_code),
+        zip_code = case_when(
+          nchar(zip_code) == 10 ~ str_sub(zip_code, 1, 5),
+          TRUE ~ zip_code
+        )) |>  select(organization, address,lon, lat, sector, org_type)
 
 ```
 
@@ -64,7 +68,8 @@ twg <- read_csv("data-raw/geocoded_survey.csv") |>
   select(organization, address,lon, lat, sector, org_type)
 
 org <- twg |> 
-  bind_rows(trwa)
+  bind_rows(trwa) |> 
+  filter(!is.na(lat))
 
 write.csv(org, "data-raw/organizations.csv")
 
@@ -73,7 +78,28 @@ write.csv(org, "data-raw/organizations.csv")
 
 ```{r add_county}
 
+library(sf)
 
+county <- readRDS("./data/counties.rds")
+
+org_sf <- org |> 
+  st_as_sf(coords = c("lon", "lat"),
+           crs = 4326, agr = "constant")
+
+
+# intersect and extract county name
+org_sf$county <- apply(st_intersects(county, org_sf, sparse = FALSE), 2, 
+               function(col) { 
+                  county[which(col), ]$name
+               })
+
+org_sf <- org_sf |> 
+  as.data.frame() |> 
+  select(organization, county)
+
+
+org <- org |> 
+  left_join(org_sf, by = "organization")
 
 ```
 
@@ -96,7 +122,7 @@ df2 <- df |>
 df <- df |> 
   bind_rows(df2)
 
-write.csv(df, "data-raw/organization.csv", row.names = FALSE)
+write.csv(df, "data/organization.csv", row.names = FALSE)
 
 ```
 

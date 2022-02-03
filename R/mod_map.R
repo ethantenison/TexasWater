@@ -50,19 +50,19 @@ mod_map_server <- function(id, data){
     # reactive to select geographic data
     map_data <- reactive({
       if (input$admin == "River Basins") {
-        readRDS("./data-raw/rb.rds")
+        readRDS("./data/rb.rds")
       } else if (input$admin == "GCDs") {
-        readRDS("./data-raw/gcd.rds")
+        readRDS("./data/gcd.rds")
       } else if (input$admin == "Rivers") {
-        readRDS("./data-raw/riv.rds")
+        readRDS("./data/riv.rds")
       } else if (input$admin == "Aquifers") {
-        readRDS("./data-raw/aqu.rds")
+        readRDS("./data/aqu.rds")
       } else if (input$admin == "River Basins") {
-        readRDS("./data-raw/rb.rds")
+        readRDS("./data/rb.rds")
       } else if (input$admin == "RWPAs") {
-        readRDS("./data-raw/rwpa.rds")
+        readRDS("./data/rwpa.rds")
       } else if (input$admin == "Counties") {
-        readRDS("./data-raw/counties.rds")
+        readRDS("./data/counties.rds")
       }
     })
     
