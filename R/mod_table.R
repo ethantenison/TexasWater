@@ -13,6 +13,7 @@
 #' @import dplyr
 #' @importFrom stringr str_detect
 #' @import glue
+#' @import tidygeocoder
 mod_table_ui <- function(id){
   ns <- NS(id)
   
@@ -56,7 +57,9 @@ mod_table_ui <- function(id){
           ns("search"), 
           label = NULL, 
           choices = "", multiple = FALSE, selected = character(0),
-          width = "100%", options = list(allowEmptyOption = FALSE, placeholder = "SEARCH..."))
+          width = "100%", options = list(allowEmptyOption = FALSE, placeholder = "SEARCH...")),
+        textInput(ns("address"), label = NULL, width = "100%", placeholder = "Enter Address"),
+        verbatimTextOutput(ns("value"))
       )
     ),
     
@@ -78,6 +81,18 @@ mod_table_server <- function(id){
     orgs <- readr::read_csv("data/organization.csv")
     
     
+    output$value <- renderText({ 
+      
+      geo_limit <- tidygeocoder::geo(
+        input$address,
+        method = "osm",
+        limit = 5, full_results = TRUE
+      )
+      
+      geo_limit$display_name
+      
+      })
+    
     # Sector selection ---------------------------------------------------------
     
     # reactive to store choices of the org input field
@@ -86,6 +101,24 @@ mod_table_server <- function(id){
       d <- orgs %>% filter(search == input$sector) %>% arrange(Organization)
       d
     })
+    
+    
+    # Selectize Options ---------------------------------------------------------
+    
+    address_choices <- reactive({
+      req(input$search)
+    
+       geo_limit <- tidygeocoder::geo(
+         input$search,
+         method = "osm",
+         limit = 5, full_results = TRUE
+       )
+       
+       geo_limit
+      
+    })
+    
+    
     
     # populate the selectizeInput choices
     observe({
@@ -108,6 +141,15 @@ mod_table_server <- function(id){
           server = TRUE
         )
         
+      } else if (input$search_control == "Address") {
+        
+        updateSelectizeInput(
+          session,
+          "search",
+          choices = address_choices()$display_name,
+          selected = current_selected,
+          server = TRUE
+        )
       }
     })
     
@@ -131,6 +173,9 @@ mod_table_server <- function(id){
         orgs |>  
           dplyr::filter(search == input$sector) |> 
           filter(str_detect(County, input$search))
+      } else if (input$search != "" & input$search_control == "Address"){
+        
+        orgs 
       }
       
       
