@@ -10,10 +10,10 @@
 #' @import leaflet
 #' @import sf
 #' @import RColorBrewer
+#' @import ggmap
 mod_map_ui <- function(id, height){
   ns <- NS(id)
   tagList(
-    
     leafletOutput(ns("map"), height = height),
     absolutePanel(top = 10, right = 10,
                   fluidRow(
@@ -29,8 +29,12 @@ mod_map_ui <- function(id, height){
                                       "River Basins", "RWPAs"), 
                           multiple  = FALSE, selected = "River Basins",
                           width = "200px"
-                        )
-                      )
+                        ),
+                        textInput(ns("search_bar"), "", "Enter Address...",
+                                  width = "200px")
+                      ),
+                      
+                        
                   ))
  
   )
@@ -43,8 +47,7 @@ mod_map_ui <- function(id, height){
 mod_map_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    
-    
+  
     # Admin Area selection -----------------------------------------------------
     
     # reactive to select geographic data
@@ -125,10 +128,23 @@ mod_map_server <- function(id, data){
     
     output$map <- renderLeaflet({
       
+        # Get latitude and longitude
+        if(input$search_bar=="" | input$search_bar == "Enter Address..."){
+          ZOOM=6
+          LAT=30.997210
+          LONG=-99.808835
+        }else{
+          target_pos=ggmap::geocode(input$search_bar)
+          LAT=target_pos$lat
+          LONG=target_pos$lon
+          ZOOM=11
+        }
+        
+      
         leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
-          setView(lng = -99.808835,
-                  lat = 30.997210,
-                  zoom = 6)  |>
+          setView(lng = LONG,
+                  lat = LAT,
+                  zoom = ZOOM)  |>
           addProviderTiles(providers$CartoDB.Positron) |>
           clearShapes() |>
           clearControls() %>%
