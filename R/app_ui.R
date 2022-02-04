@@ -3,6 +3,7 @@
 #' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import bslib
 #' 
 #' @noRd
 app_ui <- function(request) {
@@ -12,6 +13,19 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic 
     fluidPage(
+      theme = bs_theme(
+        bg = "#191970", 
+        fg = "#FFFFFF", 
+        primary = "#4666FF", 
+        base_font = font_google("Prompt"),
+        code_font = font_google("JetBrains Mono")
+      ),
+      fluidRow(
+        style = "margin: 0;",
+        column(
+          width = 8,
+        h1("The Texas Water Sector"))
+        ),
       fluidRow(
         style = "margin: 0; height: 100%",
         column(
