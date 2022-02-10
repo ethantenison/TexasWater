@@ -14,9 +14,9 @@ app_ui <- function(request) {
     # Your application UI logic 
     fluidPage(
       theme = bs_theme(
-        bg = "#191970", 
+        bg = "#0f283d", 
         fg = "#FFFFFF", 
-        primary = "#4666FF", 
+        primary = "#41a4c2", 
         base_font = font_google("Prompt"),
         code_font = font_google("JetBrains Mono")
       ),

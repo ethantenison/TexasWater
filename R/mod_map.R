@@ -30,8 +30,10 @@ mod_map_ui <- function(id, height){
                           multiple  = FALSE, selected = "River Basins",
                           width = "200px"
                         ),
+                        div(style = "margin-top:-15px;",
                         textInput(ns("search_bar"), "", "Enter Address...",
-                                  width = "200px")
+                                  width = "200px"))
+                        
                       ),
                       
                         

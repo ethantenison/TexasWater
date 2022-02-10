@@ -63,7 +63,7 @@ mod_table_ui <- function(id){
     
     div(
       style = "margin: 5px -5px 0 -5px; height: calc(100% - 130px)", 
-      reactable::reactableOutput(ns("table"), height = "650px")
+      reactable::reactableOutput(ns("table"), height = "640px")
     )
  
   )
@@ -166,6 +166,11 @@ mod_table_server <- function(id){
       
       reactable(to_table(),
                 compact = TRUE, 
+                theme = reactableTheme(
+                  backgroundColor = "#0f283d",
+                  highlightColor = "#41a4c2",
+                  color = "#FFFFFF"
+                ),
                 defaultColDef = colDef(minWidth = 20, footerStyle = "font-weight: bold"),
                 highlight = TRUE,
                 defaultPageSize = 20,
