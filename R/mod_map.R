@@ -10,7 +10,7 @@
 #' @import leaflet
 #' @import sf
 #' @import RColorBrewer
-#' @import ggmap
+#' @import tidygeocoder
 mod_map_ui <- function(id, height){
   ns <- NS(id)
   tagList(
@@ -136,9 +136,11 @@ mod_map_server <- function(id, data){
           LAT=30.997210
           LONG=-99.808835
         }else{
-          target_pos=ggmap::geocode(input$search_bar)
+          add <- tibble(address = input$search_bar)
+          print(add)
+          target_pos <- add |> tidygeocoder::geocode(address =  address, method = "osm")
           LAT=target_pos$lat
-          LONG=target_pos$lon
+          LONG=target_pos$long
           ZOOM=11
         }
         

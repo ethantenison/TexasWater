@@ -83,6 +83,7 @@
 
 
 /** Table styles **************************************************************/
+@import url(https://use.fontawesome.com/releases/v5.7.2/css/all.css)
 
 .area-link {
   cursor: pointer; 
@@ -97,4 +98,5 @@
   content: "\f35d  ";
   font-size: 10px;
 }
+
 

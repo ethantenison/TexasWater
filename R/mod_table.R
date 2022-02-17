@@ -13,7 +13,6 @@
 #' @import dplyr
 #' @importFrom stringr str_detect
 #' @import glue
-#' @import tidygeocoder
 mod_table_ui <- function(id){
   ns <- NS(id)
   
@@ -179,7 +178,7 @@ mod_table_server <- function(id){
                 wrap = TRUE,
                 onClick = onclick_js,
                 columns = list(
-                 Organization = colDef(minWidth = 50),  # overrides the default
+                 Organization = colDef(minWidth = 50, class = "area-link"),  # overrides the default
                  Address = colDef(show = F),
                  lon = colDef(show = F),
                  lat = colDef(show = F),

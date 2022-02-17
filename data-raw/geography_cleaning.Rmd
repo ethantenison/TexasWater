@@ -19,6 +19,7 @@ library(sf)
 library(janitor)
 library(tidyverse)
 library(rmapshaper)
+library(tidygeocoder)
 ```
 
 # GCDs
@@ -131,4 +132,13 @@ saveRDS(county, "data/counties.rds")
 plot(county['name'])
 
 ```
+
+```{r tidygeocodertest}
+
+addy <- tibble(address ="110 Jacob Fontaine Ln")
+
+werk <- addy |> tidygeocoder::geocode(address =  address, method = "osm")
+
+```
+
 

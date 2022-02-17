@@ -12,6 +12,7 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic 
+    tags$style("@import url(https://use.fontawesome.com/releases/v5.7.2/css/all.css);"),
     fluidPage(
       theme = bs_theme(
         bg = "#0f283d", 
