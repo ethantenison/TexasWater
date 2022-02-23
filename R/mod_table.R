@@ -188,6 +188,19 @@ mod_table_server <- function(id){
       
     })
     
+    # This code takes the javascript code and sends it to the map if clicked 
+    observeEvent(input$show_details, {
+      req(input$show_details)
+      
+      selected_row <- to_table()[input$show_details$index,]
+      
+      # change the app state
+      # state$state <- list(
+      #   id = STATE_MB_SELECTED, 
+      #   store = list(selected_mb = selected_row$code, event_source = "table")
+      # )
+    })
+    
     return(org_choices)
  
   })
