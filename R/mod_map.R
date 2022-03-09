@@ -31,8 +31,8 @@ mod_map_ui <- function(id, height){
                           width = "200px"
                         ),
                         div(style = "margin-top:-15px;",
-                        textInput(ns("search_bar"), "", "Enter Address...",
-                                  width = "200px")),
+                        searchInput(ns("search_bar"), label = "", placeholder ="Enter Address...",
+                                  width = "200px", btnSearch = icon("search"), btnReset = icon("remove"))),
                         div(
                           style = "color:black",
                           materialSwitch(
