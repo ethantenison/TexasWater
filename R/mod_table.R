@@ -182,7 +182,9 @@ mod_table_server <- function(id){
                  Address = colDef(show = F),
                  lon = colDef(show = F),
                  lat = colDef(show = F),
-                 search = colDef(show = F)
+                 search = colDef(show = F),
+                 Sector = colDef(name = "Type"),
+                 Type = colDef(name = "Sector")
                 ),
                 )
       
