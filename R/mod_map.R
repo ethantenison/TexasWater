@@ -11,6 +11,7 @@
 #' @import sf
 #' @import RColorBrewer
 #' @import tidygeocoder
+#' @import shinyWidgets
 mod_map_ui <- function(id, height){
   ns <- NS(id)
   tagList(
@@ -26,7 +27,7 @@ mod_map_ui <- function(id, height){
                           ns("admin"), 
                           label = NULL, 
                           choices = c("Aquifers","Counties", "GCDs", "Rivers",
-                                      "River Basins", "RWPAs"), 
+                                      "River Basins", "RWPGs"), 
                           multiple  = FALSE, selected = "River Basins",
                           width = "200px"
                         ),
@@ -74,7 +75,7 @@ mod_map_server <- function(id, data){
         readRDS("./data/aqu.rds")
       } else if (input$admin == "River Basins") {
         readRDS("./data/rb.rds")
-      } else if (input$admin == "RWPAs") {
+      } else if (input$admin == "RWPGs") {
         readRDS("./data/rwpa.rds")
       } else if (input$admin == "Counties") {
         readRDS("./data/counties.rds")

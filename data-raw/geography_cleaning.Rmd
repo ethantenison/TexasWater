@@ -95,7 +95,7 @@ plot(riv['name'])
 
 ```
 
-# Regional Water Planning Areas
+# Regional Water Planning Groups
 
 ```{r rwpa}
 
