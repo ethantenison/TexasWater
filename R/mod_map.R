@@ -32,7 +32,15 @@ mod_map_ui <- function(id, height){
                         ),
                         div(style = "margin-top:-15px;",
                         textInput(ns("search_bar"), "", "Enter Address...",
-                                  width = "200px"))
+                                  width = "200px")),
+                        div(
+                          style = "color:black",
+                          materialSwitch(
+                            ns("counties"),
+                            label = strong("Counties (Off/On)"),
+                            value = TRUE
+                          )
+                        )
                         
                       ),
                       
@@ -51,6 +59,8 @@ mod_map_server <- function(id, data){
     ns <- session$ns
   
     # Admin Area selection -----------------------------------------------------
+    
+    counties_shape <- readRDS("./data/counties.rds")
     
     # reactive to select geographic data
     map_data <- reactive({
@@ -152,6 +162,24 @@ mod_map_server <- function(id, data){
           addProviderTiles(providers$CartoDB.Positron) |>
           clearShapes() |>
           clearControls() %>%
+          {if(input$counties == TRUE) addPolygons(
+            map = .,
+            data = counties_shape,
+            color = "grey",
+            weight = 3,
+            smoothFactor = 0.5,
+            opacity = 0.3,
+            fillOpacity = 0
+          ) else addPolygons(
+            map = .,
+            data = counties_shape,
+            color = "#2389da",
+            weight = 0,
+            smoothFactor = 0.5,
+            opacity = 0,
+            fillOpacity = 0
+          )
+          } %>%
         {if(input$admin == "Rivers") addPolylines(
           map = .,
           color = "#2389da",
@@ -199,8 +227,17 @@ mod_map_server <- function(id, data){
                            )
         
       
-      
     })
+    
+    # observeEvent(input$counties, {
+    #   
+    #  if (input$counties == TRUE) {
+    #    leafletProxy("map") |> 
+    #      
+    #  }
+    #   
+    #   
+    # })
     
   })
 }
