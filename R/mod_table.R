@@ -215,11 +215,29 @@ mod_table_server <- function(id) {
       # )
     })
     
-  
-    try(return(selected_row))
-
+    show_condition <- function(code) {
+      tryCatch(
+        code,
+        error = function(c)
+          "error",
+        warning = function(c)
+          "warning",
+        message = function(c)
+          "message"
+      )
+    }
     
-    return(org_choices)
+    if (show_condition(selected_row) == "error") {
+      org = ""
+    } else {
+      org = selected_row
+    }
+    
+    list(
+      org_choices = org_choices,
+      org = reactive(org)
+      
+    )
     
   })
 }

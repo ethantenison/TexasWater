@@ -55,7 +55,7 @@ mod_map_ui <- function(id, height){
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id, data){
+mod_map_server <- function(id, data, zoom){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
   
@@ -82,8 +82,7 @@ mod_map_server <- function(id, data){
       }
     })
     
-    
-    
+
      pal <- reactive({
          colorFactor(
            palette = "Set1",
@@ -146,14 +145,21 @@ mod_map_server <- function(id, data){
           ZOOM=6
           LAT=30.997210
           LONG=-99.808835
-        }else{
+         } else{
           add <- tibble(address = input$search_bar)
           print(add)
           target_pos <- add |> tidygeocoder::geocode(address =  address, method = "osm")
           LAT=target_pos$lat
           LONG=target_pos$long
           ZOOM=11
-        }
+         }
+      
+        print(zoom())
+         if(zoom() != "") {
+           LAT= zoom()$lat
+           LONG = zoom()$long
+           ZOOM=11
+         }
         
       
         leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>

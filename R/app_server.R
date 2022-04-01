@@ -15,6 +15,11 @@ app_server <- function( input, output, session ) {
   
   table <- mod_table_server("table")
   
-  mod_map_server("map", table)
+  org_choices <- table$org_choices
+  org_zoom <- table$org
+  
+  print(org_zoom)
+  
+  mod_map_server("map", org_choices, org_zoom)
 
 }
