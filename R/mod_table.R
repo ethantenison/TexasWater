@@ -165,7 +165,6 @@ mod_table_server <- function(id) {
         )
       )
       
-      
       reactable(
         to_table(),
         compact = TRUE,
@@ -207,6 +206,7 @@ mod_table_server <- function(id) {
       selected_row <- to_table()[input$show_details$index, ]
       
       print(selected_row)
+      return(selected_row)
       
       # change the app state
       # state$state <- list(
@@ -214,6 +214,10 @@ mod_table_server <- function(id) {
       #   store = list(selected_mb = selected_row$code, event_source = "table")
       # )
     })
+    
+  
+    try(return(selected_row))
+
     
     return(org_choices)
     
