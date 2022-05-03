@@ -22,22 +22,6 @@ mod_map_ui <- function(id, height) {
                             style = "margin: 7px 0 0 0; font-size: 14px;",
                             div(
                               style = "float:right",
-                              pickerInput(
-                                ns("admin"),
-                                label = NULL,
-                                choices = c(
-                                  "Aquifers",
-                                  "Counties",
-                                  "GCDs",
-                                  "Rivers",
-                                  "River Basins",
-                                  "RWPGs",
-                                  "RFPGs"
-                                ),
-                                multiple  = FALSE,
-                                selected = "River Basins",
-                                width = "200px"
-                              ),
                               div(
                                 style = "margin-top:-15px;",
                                 searchInput(
@@ -63,7 +47,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id, data, zoom) {
+mod_map_server <- function(id, data,geo, zoom) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -73,21 +57,21 @@ mod_map_server <- function(id, data, zoom) {
     
     # reactive to select geographic data
     map_data <- reactive({
-      if (input$admin == "River Basins") {
+      if (geo() == "River Basins") {
         readRDS("./data/rb.rds")
-      } else if (input$admin == "GCDs") {
+      } else if (geo() == "GCDs") {
         readRDS("./data/gcd.rds")
-      } else if (input$admin == "Rivers") {
+      } else if (geo() == "Rivers") {
         readRDS("./data/riv.rds")
-      } else if (input$admin == "Aquifers") {
+      } else if (geo() == "Aquifers") {
         readRDS("./data/aqu.rds")
-      } else if (input$admin == "River Basins") {
+      } else if (geo() == "River Basins") {
         readRDS("./data/rb.rds")
-      } else if (input$admin == "RWPGs") {
+      } else if (geo() == "RWPGs") {
         readRDS("./data/rwpa.rds")
-      } else if (input$admin == "Counties") {
+      } else if (geo() == "Counties") {
         readRDS("./data/counties.rds")
-      } else if (input$admin == "RFPGs") {
+      } else if (geo() == "RFPGs") {
         readRDS("./data/fg.rds")
       }
     })
@@ -112,7 +96,7 @@ mod_map_server <- function(id, data, zoom) {
     })
     
     gon_line <- function(x) {
-      if (input$admin == "Rivers") {
+      if (geo() == "Rivers") {
         addPolylines(
           color = "lightblue",
           weight = 3,
@@ -203,7 +187,7 @@ mod_map_server <- function(id, data, zoom) {
             )
         } %>%
         {
-          if (input$admin == "Rivers")
+          if (geo() == "Rivers")
             addPolylines(
               map = .,
               color = "#2389da",

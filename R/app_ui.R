@@ -32,7 +32,7 @@ app_ui <- function(request) {
         column(
           width = 4,
           style = "height: 100%; padding-bottom: 65px",
-          mod_table_ui("table")
+          mod_controls_ui("controls")
         ),
         column(
           width = 8,

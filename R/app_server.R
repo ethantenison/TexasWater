@@ -13,13 +13,14 @@ app_server <- function( input, output, session ) {
   mod_selector_server("selector")
   
   
-  table <- mod_table_server("table")
+  controls <- mod_controls_server("controls")
   
-  org_choices <- table$org_choices
-  org_zoom <- table$org
+  org_choices <- controls$org_choices
+  org_zoom <- controls$org
+  geo <- controls$geo
   
   print(org_zoom)
   
-  mod_map_server("map", org_choices, org_zoom)
+  mod_map_server("map", org_choices, geo, org_zoom)
 
 }
