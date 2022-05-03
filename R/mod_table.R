@@ -19,6 +19,7 @@ mod_table_ui <- function(id) {
   tagList(
     fluidRow(
       style = "margin: 0px -12px 0 -12px",
+      h5("Organization Controls"),
       column(
         style = "margin: 0px 0 0 0; font-size: 14px;",
         width = 8,
@@ -62,12 +63,14 @@ mod_table_ui <- function(id) {
           selected = character(0),
           width = "100%",
           options = list(allowEmptyOption = FALSE, placeholder = "SEARCH...")
-        )
+        ),
+        h5("Boundary Controls")
       )
     ),
     
-    div(style = "margin: 5px -5px 0 -5px; height: calc(100% - 130px)",
-        reactable::reactableOutput(ns("table"), height = "640px"))
+    
+    # div(style = "margin: 5px -5px 0 -5px; height: calc(100% - 130px)",
+    #     reactable::reactableOutput(ns("table"), height = "640px"))
     
   )
 }
@@ -145,59 +148,59 @@ mod_table_server <- function(id) {
     
     # Render Table ------------------------------------------------------------
     
-    output$table <- renderReactable({
-      onclick_js <- JS(
-        glue(
-          "function(rowInfo, colInfo) {
-          // Only handle click events on the 'mb' column
-          if (colInfo.id !== 'Organization') {
-            return
-          }
-
-          // Send the click event to Shiny, which will be available in input$show_details
-          // Note that the row index starts at 0 in JavaScript, so we add 1
-          if (window.Shiny) {
-            Shiny.setInputValue('<<< ns('show_details') >>>', { index: rowInfo.index + 1, rnd: Math.random() })
-          }
-        }",
-        .open = "<<<",
-        .close = ">>>"
-        )
-      )
-      
-      reactable(
-        to_table(),
-        compact = TRUE,
-        theme = reactableTheme(
-          backgroundColor = "#0f283d",
-          highlightColor = "#41a4c2",
-          color = "#FFFFFF"
-        ),
-        defaultColDef = colDef(minWidth = 20,
-                               footerStyle = "font-weight: bold"),
-        highlight = TRUE,
-        defaultPageSize = 20,
-        paginationType = "simple",
-        # searchable = TRUE,
-        wrap = TRUE,
-        onClick = onclick_js,
-        columns = list(
-          Organization = colDef(
-            minWidth = 50,
-            class = "area-link",
-            style = list(cursor = "pointer")
-          ),
-          # overrides the default
-          Address = colDef(show = F),
-          lon = colDef(show = F),
-          lat = colDef(show = F),
-          search = colDef(show = F),
-          Sector = colDef(show = F),
-          Type = colDef(name = "Sector")
-        ),
-      )
-      
-    })
+    # output$table <- renderReactable({
+    #   onclick_js <- JS(
+    #     glue(
+    #       "function(rowInfo, colInfo) {
+    #       // Only handle click events on the 'mb' column
+    #       if (colInfo.id !== 'Organization') {
+    #         return
+    #       }
+    # 
+    #       // Send the click event to Shiny, which will be available in input$show_details
+    #       // Note that the row index starts at 0 in JavaScript, so we add 1
+    #       if (window.Shiny) {
+    #         Shiny.setInputValue('<<< ns('show_details') >>>', { index: rowInfo.index + 1, rnd: Math.random() })
+    #       }
+    #     }",
+    #     .open = "<<<",
+    #     .close = ">>>"
+    #     )
+    #   )
+    #   
+    #   reactable(
+    #     to_table(),
+    #     compact = TRUE,
+    #     theme = reactableTheme(
+    #       backgroundColor = "#0f283d",
+    #       highlightColor = "#41a4c2",
+    #       color = "#FFFFFF"
+    #     ),
+    #     defaultColDef = colDef(minWidth = 20,
+    #                            footerStyle = "font-weight: bold"),
+    #     highlight = TRUE,
+    #     defaultPageSize = 20,
+    #     paginationType = "simple",
+    #     # searchable = TRUE,
+    #     wrap = TRUE,
+    #     onClick = onclick_js,
+    #     columns = list(
+    #       Organization = colDef(
+    #         minWidth = 50,
+    #         class = "area-link",
+    #         style = list(cursor = "pointer")
+    #       ),
+    #       # overrides the default
+    #       Address = colDef(show = F),
+    #       lon = colDef(show = F),
+    #       lat = colDef(show = F),
+    #       search = colDef(show = F),
+    #       Sector = colDef(show = F),
+    #       Type = colDef(name = "Sector")
+    #     ),
+    #   )
+    #   
+    # })
     
     # This code takes the javascript code and sends it to the map if clicked
     observeEvent(input$show_details, {
