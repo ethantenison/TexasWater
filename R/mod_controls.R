@@ -126,14 +126,8 @@ mod_controls_server <- function(id) {
     # reactive to store choices of the org input field
     org_choices <- reactive({
       req(orgs$Sector)
-      if (input$search_control == "Organization") {
-        d <-
-          orgs %>% filter(search == input$sector) %>% arrange(Organization)
+        d <- orgs %>% filter(search == input$sector) %>% arrange(Organization)
         d
-      } else if (input$search_control == "County") {
-        d <- orgs %>% filter(search == input$sector) %>% arrange(County)
-        d
-      }
     })
     
     

@@ -15,19 +15,19 @@
 mod_map_ui <- function(id, height) {
   ns <- NS(id)
   tagList(leafletOutput(ns("map"), height = height),
-          absolutePanel(top = 5, right = 5,left = 5, bottom = "auto",
+          absolutePanel(top = 5, right = 20,left = 5, bottom = "auto",
                         fluidRow(
                           column(width = 2),
                           column(
                             width = 10,
-                            style = "margin: 7px 0 0 0; font-size: 14px;",
+                            style = "margin: 7px 0 0 0;",
                             div(
-                              style = "float:right",
+                              style = "float:right; color: black; font-size: 16px;",
                               prettyRadioButtons(
                                 inputId = ns("search_control"),
                                 choices = c("County", "Organization"),
-                                selected = "Organization",
-                                label = strong("Zoom"),
+                                selected = "County",
+                                label = "",
                                 width = "100%",
                                 animation = "jelly",
                                 inline = TRUE
@@ -39,7 +39,7 @@ mod_map_ui <- function(id, height) {
                                 multiple = FALSE,
                                 selected = character(0),
                                 width = "100%",
-                                options = list(allowEmptyOption = FALSE, placeholder = "SEARCH...")
+                                options = list(allowEmptyOption = FALSE, placeholder = "Zoom...")
                               ),
                               div(
                                 style = "margin-top:-15px;",
@@ -87,8 +87,31 @@ mod_map_server <- function(id,data,geo, county, zoom) {
         readRDS("./data/fg.rds")
       }
     })
+    # Search Controls -----------------------------------------------------
+    # populate the selectizeInput choices
+    observe({
+      current_selected <- isolate(input$search)
+      if (input$search_control == "Organization") {
+        updateSelectizeInput(
+          session,
+          "search",
+          choices = data()$Organization,
+          selected = current_selected,
+          server = TRUE
+        )
+      } else if (input$search_control == "County") {
+        updateSelectizeInput(
+          session,
+          "search",
+          choices = data()$County,
+          selected = current_selected,
+          server = TRUE
+        )
+        
+      }
+    })
     
-    
+    # Color Palettes -----------------------------------------------------
     pal <- reactive({
       colorFactor(
         palette = "Set1",
@@ -97,7 +120,6 @@ mod_map_server <- function(id,data,geo, county, zoom) {
         na.color = rgb(0, 0, 0, 0)
       )
     })
-    
     pal_org <- reactive({
       colorFactor(
         palette = "Set1",
@@ -106,7 +128,7 @@ mod_map_server <- function(id,data,geo, county, zoom) {
         na.color = rgb(0, 0, 0, 0)
       )
     })
-    
+    # Leaflet Mapping -----------------------------------------------------
     gon_line <- function(x) {
       if (geo() == "Rivers") {
         addPolylines(
