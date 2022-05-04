@@ -15,13 +15,32 @@
 mod_map_ui <- function(id, height) {
   ns <- NS(id)
   tagList(leafletOutput(ns("map"), height = height),
-          absolutePanel(top = 5, right = -100,left = "auto", bottom = "auto",
+          absolutePanel(top = 5, right = 5,left = 5, bottom = "auto",
                         fluidRow(
+                          column(width = 2),
                           column(
-                            width = 3,
+                            width = 10,
                             style = "margin: 7px 0 0 0; font-size: 14px;",
                             div(
                               style = "float:right",
+                              prettyRadioButtons(
+                                inputId = ns("search_control"),
+                                choices = c("County", "Organization"),
+                                selected = "Organization",
+                                label = strong("Zoom"),
+                                width = "100%",
+                                animation = "jelly",
+                                inline = TRUE
+                              ),
+                              selectizeInput(
+                                ns("search"),
+                                label = NULL,
+                                choices = "",
+                                multiple = FALSE,
+                                selected = character(0),
+                                width = "100%",
+                                options = list(allowEmptyOption = FALSE, placeholder = "SEARCH...")
+                              ),
                               div(
                                 style = "margin-top:-15px;",
                                 searchInput(
@@ -40,7 +59,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id, data,geo, county, zoom) {
+mod_map_server <- function(id,data,geo, county, zoom) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
