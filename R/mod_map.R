@@ -37,7 +37,8 @@ mod_map_ui <- function(id, height) {
                                 multiple = FALSE,
                                 selected = character(0),
                                 width = "100%",
-                                options = list(allowEmptyOption = FALSE, placeholder = "Zoom...")
+                                options = list(allowEmptyOption = FALSE,
+                                               placeholder = "Zoom Search...")
                               ),
                               div(
                                 style = "margin-top:-15px;",
@@ -109,7 +110,8 @@ mod_map_server <- function(id,data,geo, county) {
       }
     })
     
-    met_pallete <- MetBrewer::met.brewer(name="Isfahan2",n=10)
+    
+    met_pallete <- MetBrewer::met.brewer(name="Isfahan2",n=20)
     met_pallete <- as.character(met_pallete)
     
     # Color Palettes -----------------------------------------------------
@@ -271,16 +273,6 @@ mod_map_server <- function(id,data,geo, county) {
       
     })
     
-    # observeEvent(input$counties, {
-    #   
-    #  if (input$counties == TRUE) {
-    #    leafletProxy("map") |> 
-    #      
-    #  }
-    #   
-    #   
-    # })
-    
   })
 }
     
@@ -289,19 +281,3 @@ mod_map_server <- function(id,data,geo, county) {
     
 ## To be copied in the server
 # mod_map_server("map_ui_1")
-
-
-# addPolylines(
-#   color = "lightblue",
-#   weight = 3,
-#   smoothFactor = 0.5,
-#   opacity = 0.7,
-#   fillOpacity = 0.7,
-#   fillColor = ~ pal()(map_data()$name),
-#   highlightOptions = highlightOptions(
-#     color = "white",
-#     weight = 2,
-#     bringToFront = TRUE
-#   ),
-#   popup = map_data()$name,
-#   label = map_data()$name)
