@@ -18,11 +18,23 @@ mod_controls_ui <- function(id) {
   
   tagList(
     fluidRow(
-      column(
-        width = 12,
-        style = "    margin: -5px 0px 5px 0",
-      h5("Organization Controls"))
-      ),
+      column(width =12,
+             style = "margin: -5px 0px 5px 0",
+             pickerInput(
+               ns("sector"),
+               label = strong("Select Sector"),
+               choices = c("All", "Rural", "Agriculture",
+                           "Groundwater"),
+               multiple  = FALSE,
+               selected = "All",
+               width = "175px"
+             ),
+             p("Etiam purus enim, accumsan vel tortor in, sollicitudin porttitor
+               sapien. Aliquam vitae dignissim felis. Nulla facilisi. Fusce
+               ultricies nulla massa. Sed convallis ante mi, vel mattis turpis
+               convallis eu. Suspendisse ac metus nec augue porta facilisis.
+               Quisque laoreet sagittis nunc et maximus. Proin nec consectetur tellus."))
+    ),
     fluidRow(
       style = "margin: 0px -12px 0 -12px",
       column(
@@ -38,22 +50,6 @@ mod_controls_ui <- function(id) {
           inline = TRUE
         )
       ),
-      column(
-        width = 4,
-        style = "margin: 7px 0 0 0; font-size: 14px;",
-        div(
-          style = "float:right",
-          pickerInput(
-            ns("sector"),
-            label = NULL,
-            choices = c("All", "Rural", "Agriculture",
-                        "Groundwater"),
-            multiple  = FALSE,
-            selected = "All",
-            width = "100px"
-          )
-        )
-      )
     )
     ,
     fluidRow(
@@ -72,15 +68,11 @@ mod_controls_ui <- function(id) {
       )
     ),
     fluidRow(
-      column(
-        width = 12,
-        style = "    margin: -5px 0px 5px 0",
-        h5("Boundary Controls")),
         column(
           width = 8,
         pickerInput(
           ns("admin"),
-          label = "Select Geography",
+          label = strong("Select Geography"),
           choices = c(
             "Aquifers",
             "Counties",
@@ -92,21 +84,30 @@ mod_controls_ui <- function(id) {
           ),
           multiple  = FALSE,
           selected = "River Basins",
-          width = "150px"
+          width = "175px"
         )),
         column(width = 4,
         materialSwitch(
           ns("counties"),
-          label = "Counties",
+          label = strong("Counties"),
           value = TRUE,
           inline = TRUE
         )
         )
     ),
-    
-    
-    # div(style = "margin: 5px -5px 0 -5px; height: calc(100% - 130px)",
-    #     reactable::reactableOutput(ns("table"), height = "640px"))
+    fluidRow(
+      column(
+        width = 12,
+        p("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
+          bibendum lacinia magna, in ornare felis cursus at. Duis id pharetra
+          elit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+          Suspendisse sed porta odio, id sagittis leo. Proin ut purus in purus
+          tincidunt feugiat vitae suscipit metus. Praesent ullamcorper odio id
+          ex sodales congue. Mauris sed tempus justo. Fusce volutpat sollicitudin
+          dolor eu imperdiet. Donec in nisl vitae leo efficitur ornare. Nulla
+          facilisi. Nullam pretium sed libero quis efficitur.")
+      )
+    )
     
   )
 }
