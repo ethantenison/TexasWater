@@ -25,7 +25,10 @@ app_ui <- function(request) {
         style = "margin: 0;",
         column(
           width = 8,
-        h1("The Texas Water Sector"))
+        h1("The Texas Water Sector")),
+        column(
+          width = 4
+        )
         ),
       fluidRow(
         style = "margin: 0; height: 100%",

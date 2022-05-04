@@ -13,23 +13,26 @@
 mod_map_ui <- function(id, height) {
   ns <- NS(id)
   tagList(leafletOutput(ns("map"), height = height),
-          absolutePanel(top = 5, right = 20,left = 5, bottom = "auto",
+          absolutePanel(top = -75, right = 20,left = 5, bottom = "auto",
                         fluidRow(
                           column(width = 2),
                           column(
                             width = 10,
                             style = "margin: 7px 0 0 0;",
                             div(
-                              style = "float:right; color: black; font-size: 16px;",
+                              style = "float:right; font-size: 16px;",
                               prettyRadioButtons(
                                 inputId = ns("search_control"),
                                 choices = c("County", "Organization"),
                                 selected = "County",
-                                label = "",
+                                label = "Search By:",
                                 width = "100%",
                                 animation = "jelly",
                                 inline = TRUE
                               ),
+                              div(
+                                style = "margin: -5px",
+                              br()),
                               selectizeInput(
                                 ns("search"),
                                 label = NULL,
@@ -38,7 +41,7 @@ mod_map_ui <- function(id, height) {
                                 selected = character(0),
                                 width = "100%",
                                 options = list(allowEmptyOption = FALSE,
-                                               placeholder = "Zoom Search...")
+                                               placeholder = "Search...")
                               ),
                               div(
                                 style = "margin-top:-15px;",
@@ -131,7 +134,7 @@ mod_map_server <- function(id,data,geo, county) {
         na.color = rgb(0, 0, 0, 0)
       )
     })
-    # Leaflet Mapping -----------------------------------------------------
+    # River Mapping -----------------------------------------------------
     gon_line <- function(x) {
       if (geo() == "Rivers") {
         addPolylines(
@@ -169,7 +172,7 @@ mod_map_server <- function(id,data,geo, county) {
       }
       
     }
-    
+    # Leaflet Mapping -----------------------------------------------------  
     output$map <- renderLeaflet({
       # Get latitude and longitude
       if (input$search_bar == "" |
