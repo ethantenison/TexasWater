@@ -15,7 +15,7 @@
 mod_map_ui <- function(id, height) {
   ns <- NS(id)
   tagList(leafletOutput(ns("map"), height = height),
-          absolutePanel(top = 5, right = -300,left = "auto", bottom = "auto",
+          absolutePanel(top = 5, right = -100,left = "auto", bottom = "auto",
                         fluidRow(
                           column(
                             width = 3,
@@ -32,14 +32,7 @@ mod_map_ui <- function(id, height) {
                                   btnSearch = icon("search"),
                                   btnReset = icon("remove")
                                 )
-                              ),
-                              div(style = "color:black",
-                                  materialSwitch(
-                                    ns("counties"),
-                                    label = strong("Counties (Off/On)"),
-                                    value = TRUE
-                                  ))
-                              
+                              )
                             ),
                           )
                         )))
@@ -47,7 +40,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id, data,geo, zoom) {
+mod_map_server <- function(id, data,geo, county, zoom) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -165,7 +158,7 @@ mod_map_server <- function(id, data,geo, zoom) {
         clearShapes() |>
         clearControls() %>%
         {
-          if (input$counties == TRUE)
+          if (county() == TRUE)
             addPolygons(
               map = .,
               data = counties_shape,

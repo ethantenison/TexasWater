@@ -75,7 +75,9 @@ mod_controls_ui <- function(id) {
       column(
         width = 12,
         style = "    margin: -5px 0px 5px 0",
-        h5("Boundary Controls"),
+        h5("Boundary Controls")),
+        column(
+          width = 8,
         pickerInput(
           ns("admin"),
           label = "Select Geography",
@@ -90,12 +92,14 @@ mod_controls_ui <- function(id) {
           ),
           multiple  = FALSE,
           selected = "River Basins",
-          width = "200px"
-        ),
+          width = "150px"
+        )),
+        column(width = 4,
         materialSwitch(
           ns("counties"),
-          label = "Counties (Off/On)",
-          value = TRUE
+          label = "Counties",
+          value = TRUE,
+          inline = TRUE
         )
         )
     ),
@@ -215,7 +219,8 @@ mod_controls_server <- function(id) {
     list(
       org_choices = org_choices,
       org = reactive(org),
-      geo = reactive(input$admin)
+      geo = reactive(input$admin),
+      county = reactive(input$counties)
       
     )
     
