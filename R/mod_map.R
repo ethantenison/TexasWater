@@ -43,17 +43,17 @@ mod_map_ui <- function(id, height) {
                                 options = list(allowEmptyOption = FALSE,
                                                placeholder = "Search...")
                               ),
-                              div(
-                                style = "margin-top:-15px;",
-                                searchInput(
-                                  ns("search_bar"),
-                                  label = "",
-                                  placeholder = "Enter Address...",
-                                  width = "200px",
-                                  btnSearch = icon("search"),
-                                  btnReset = icon("remove")
-                                )
-                              )
+                              # div(
+                              #   style = "margin-top:-15px;",
+                              #   searchInput(
+                              #     ns("search_bar"),
+                              #     label = "",
+                              #     placeholder = "Enter Address...",
+                              #     width = "200px",
+                              #     btnSearch = icon("search"),
+                              #     btnReset = icon("remove")
+                              #   )
+                              # )
                             ),
                           )
                         )))
@@ -68,6 +68,7 @@ mod_map_server <- function(id,data,geo, county) {
     # Admin Area selection -----------------------------------------------------
     
     counties_shape <- readRDS("./data/counties.rds")
+    
     
     # reactive to select geographic data
     map_data <- reactive({
@@ -174,20 +175,35 @@ mod_map_server <- function(id,data,geo, county) {
     }
     # Leaflet Mapping -----------------------------------------------------  
     output$map <- renderLeaflet({
-      # Get latitude and longitude
-      if (input$search_bar == "" |
-          input$search_bar == "Enter Address...") {
+      # Zooming in on organization or county 
+      # if (input$search_bar == "" |
+      #     input$search_bar == "Enter Address...") {
+      #   ZOOM = 6
+      #   LAT = 30.997210
+      #   LONG = -99.808835
+      # } else{
+      #   add <- tibble(address = input$search_bar)
+      #   print(add)
+      #   target_pos <-
+      #     add |> tidygeocoder::geocode(address =  address, method = "osm")
+      #   LAT = target_pos$lat
+      #   LONG = target_pos$long
+      #   ZOOM = 11
+      # }
+      if ((input$search_control == "Organization" & input$search == "Search...") |
+          (input$search_control == "Organization" & input$search == "")) {
         ZOOM = 6
         LAT = 30.997210
         LONG = -99.808835
-      } else{
-        add <- tibble(address = input$search_bar)
-        print(add)
-        target_pos <-
-          add |> tidygeocoder::geocode(address =  address, method = "osm")
-        LAT = target_pos$lat
-        LONG = target_pos$long
+      } else if (input$search_control == "Organization") {
+        org_selected = data() |> filter(Organization == input$search)
+        LAT = org_selected$lat
+        LONG = org_selected$lon
         ZOOM = 11
+      } else {
+        ZOOM = 6
+        LAT = 30.997210
+        LONG = -99.808835
       }
       
       leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
