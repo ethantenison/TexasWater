@@ -106,7 +106,7 @@ mod_map_server <- function(id,data,geo, county) {
         updateSelectizeInput(
           session,
           "search",
-          choices = data()$County,
+          choices = sort(data()$County),
           selected = current_selected,
           server = TRUE
         )
@@ -173,25 +173,9 @@ mod_map_server <- function(id,data,geo, county) {
       }
       
     }
-    # Leaflet Mapping -----------------------------------------------------  
+    # Zoom -----------------------------------------------------  
     output$map <- renderLeaflet({
-      # Zooming in on organization or county 
-      # if (input$search_bar == "" |
-      #     input$search_bar == "Enter Address...") {
-      #   ZOOM = 6
-      #   LAT = 30.997210
-      #   LONG = -99.808835
-      # } else{
-      #   add <- tibble(address = input$search_bar)
-      #   print(add)
-      #   target_pos <-
-      #     add |> tidygeocoder::geocode(address =  address, method = "osm")
-      #   LAT = target_pos$lat
-      #   LONG = target_pos$long
-      #   ZOOM = 11
-      # }
-      if ((input$search_control == "Organization" & input$search == "Search...") |
-          (input$search_control == "Organization" & input$search == "")) {
+      if (input$search == "Search..." |input$search == "") {
         ZOOM = 6
         LAT = 30.997210
         LONG = -99.808835
@@ -200,12 +184,17 @@ mod_map_server <- function(id,data,geo, county) {
         LAT = org_selected$lat
         LONG = org_selected$lon
         ZOOM = 11
-      } else {
-        ZOOM = 6
-        LAT = 30.997210
-        LONG = -99.808835
+      } else if (input$search_control == "County") {
+        county = paste0(input$search, " ", "County,TX")
+        county = as.data.frame(county)
+        target_pos <- county |> 
+               tidygeocoder::geocode(address =  county, method = "osm")
+        ZOOM = 11
+        LAT = target_pos$lat
+        LONG = target_pos$long
       }
       
+      # Map Design -----------------------------------------------------
       leaflet(map_data(), options = leafletOptions(zoomControl = FALSE)) |>
         setView(lng = LONG,
                 lat = LAT,
