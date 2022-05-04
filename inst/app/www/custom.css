@@ -1,7 +1,7 @@
 /** Selectize adjustments ******************************************************/
 
 .selectize-input, .selectize-control.single .selectize-input.input-active {
-    background: #273e50;
+/**    background: #273e50; **/
     cursor: text;
     display: inline-block;
 }
@@ -25,7 +25,7 @@
 }
 
 .selectize-dropdown, .selectize-input, .selectize-input input {
-    color: #41a4c2;
+/**    color: #41a4c2; **/
     font-family: "Roboto Condensed", sans-serif;
     font-size: 12px;
     font-weight: bold;
@@ -34,7 +34,7 @@
 }
 
 .selectize-input.full {
-    background-color: #273e50; 
+/**    background-color: #273e50; **/
 }
 
 .selectize-dropdown, .selectize-dropdown.form-control {
@@ -62,7 +62,7 @@
 .action-button {
   color: #FFFFFF;
   border-radius: 4px;
-  background-color: #313131;
+/**  background-color: #313131; **/
   padding: 5px 7px 5px 7px;
   margin-right: 5px;
 }

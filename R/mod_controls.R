@@ -36,38 +36,6 @@ mod_controls_ui <- function(id) {
                Quisque laoreet sagittis nunc et maximus. Proin nec consectetur tellus."))
     ),
     fluidRow(
-      style = "margin: 0px -12px 0 -12px",
-      column(
-        style = "margin: 0px 0 0 0; font-size: 14px;",
-        width = 8,
-        prettyRadioButtons(
-          inputId = ns("search_control"),
-          choices = c("County", "Organization"),
-          selected = "Organization",
-          label = "",
-          width = "auto",
-          animation = "jelly",
-          inline = TRUE
-        )
-      ),
-    )
-    ,
-    fluidRow(
-      column(
-        width = 12,
-        style = "    margin: -5px 0px 5px 0",
-        selectizeInput(
-          ns("search"),
-          label = NULL,
-          choices = "",
-          multiple = FALSE,
-          selected = character(0),
-          width = "100%",
-          options = list(allowEmptyOption = FALSE, placeholder = "SEARCH...")
-        )
-      )
-    ),
-    fluidRow(
         column(
           width = 8,
         pickerInput(
@@ -130,90 +98,9 @@ mod_controls_server <- function(id) {
         d
     })
     
-    
-    # populate the selectizeInput choices
-    observe({
-      req(org_choices())
-      current_selected <- isolate(input$search)
-      if (input$search_control == "Organization") {
-        updateSelectizeInput(
-          session,
-          "search",
-          choices = org_choices()$Organization,
-          selected = current_selected,
-          server = TRUE
-        )
-      } else if (input$search_control == "County") {
-        updateSelectizeInput(
-          session,
-          "search",
-          choices = org_choices()$County,
-          selected = current_selected,
-          server = TRUE
-        )
-        
-      }
-    })
-    
-    # Data for table
-    to_table <- reactive({
-      req(orgs$Organization, orgs$search)
-      
-      if (input$search == "") {
-        orgs |>
-          dplyr::filter(search == input$sector)
-        
-      } else if (input$search != "" &
-                 input$search_control == "Organization") {
-        orgs |>
-          dplyr::filter(search == input$sector) |>
-          filter(str_detect(Organization, input$search))
-      } else if (input$search != "" &
-                 input$search_control == "County") {
-        orgs |>
-          dplyr::filter(search == input$sector) |>
-          filter(str_detect(County, input$search))
-      }
-      
-    })
-    
-    # This code takes the javascript code and sends it to the map if clicked
-    observeEvent(input$show_details, {
-      req(input$show_details)
-      
-      selected_row <- to_table()[input$show_details$index, ]
-      
-      print(selected_row)
-      return(selected_row)
-      
-      # change the app state
-      # state$state <- list(
-      #   id = STATE_MB_SELECTED,
-      #   store = list(selected_mb = selected_row$code, event_source = "table")
-      # )
-    })
-    
-    show_condition <- function(code) {
-      tryCatch(
-        code,
-        error = function(c)
-          "error",
-        warning = function(c)
-          "warning",
-        message = function(c)
-          "message"
-      )
-    }
-    
-    if (show_condition(selected_row) == "error") {
-      org = ""
-    } else {
-      org = selected_row
-    }
-    
+    #Objects sent to other modules 
     list(
       org_choices = org_choices,
-      org = reactive(org),
       geo = reactive(input$admin),
       county = reactive(input$counties)
       

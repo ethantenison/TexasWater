@@ -14,10 +14,10 @@ app_ui <- function(request) {
     # Your application UI logic 
     tags$style("@import url(https://use.fontawesome.com/releases/v5.7.2/css/all.css);"),
     fluidPage(
-      theme = bs_theme(
-        bg = "#0f283d", 
+      theme = bslib::bs_theme(
+        bg = "#264D96", 
         fg = "#FFFFFF", 
-        primary = "#41a4c2", 
+        primary = "#2BADBD", 
         base_font = font_google("Prompt"),
         code_font = font_google("JetBrains Mono")
       ),

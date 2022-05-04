@@ -17,6 +17,7 @@ Imports:
     golem (>= 0.3.1),
     htmltools,
     leaflet,
+    MetBrewer,
     pkgload,
     processx,
     RColorBrewer,

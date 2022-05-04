@@ -1,17 +1,15 @@
 #' map UI Function
 #'
 #' @description A shiny Module.
-#'
 #' @param id,input,output,session Internal parameters for {shiny}.
-#'
 #' @noRd 
-#'
 #' @importFrom shiny NS tagList 
 #' @import leaflet
 #' @import sf
 #' @import RColorBrewer
 #' @import tidygeocoder
 #' @import shinyWidgets
+#' @import MetBrewer
 mod_map_ui <- function(id, height) {
   ns <- NS(id)
   tagList(leafletOutput(ns("map"), height = height),
@@ -59,7 +57,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id,data,geo, county, zoom) {
+mod_map_server <- function(id,data,geo, county) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -111,10 +109,13 @@ mod_map_server <- function(id,data,geo, county, zoom) {
       }
     })
     
+    met_pallete <- MetBrewer::met.brewer(name="Isfahan2",n=10)
+    met_pallete <- as.character(met_pallete)
+    
     # Color Palettes -----------------------------------------------------
     pal <- reactive({
       colorFactor(
-        palette = "Set1",
+        palette = met_pallete,
         reverse = FALSE,
         domain = map_data()$name,
         na.color = rgb(0, 0, 0, 0)
@@ -122,7 +123,7 @@ mod_map_server <- function(id,data,geo, county, zoom) {
     })
     pal_org <- reactive({
       colorFactor(
-        palette = "Set1",
+        palette = met_pallete,
         reverse = FALSE,
         domain = data()$Type,
         na.color = rgb(0, 0, 0, 0)
@@ -181,13 +182,6 @@ mod_map_server <- function(id,data,geo, county, zoom) {
           add |> tidygeocoder::geocode(address =  address, method = "osm")
         LAT = target_pos$lat
         LONG = target_pos$long
-        ZOOM = 11
-      }
-      
-      print(zoom())
-      if (zoom() != "") {
-        LAT = zoom()$lat
-        LONG = zoom()$long
         ZOOM = 11
       }
       
