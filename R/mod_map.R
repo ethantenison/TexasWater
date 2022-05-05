@@ -68,7 +68,7 @@ mod_map_server <- function(id,data,geo, county) {
     # Admin Area selection -----------------------------------------------------
     
     counties_shape <- readRDS("./data/counties.rds")
-    
+    county_lonlat <- read_csv("data/county_lonlat.csv")
     
     # reactive to select geographic data
     map_data <- reactive({
@@ -185,13 +185,10 @@ mod_map_server <- function(id,data,geo, county) {
         LONG = org_selected$lon
         ZOOM = 11
       } else if (input$search_control == "County") {
-        county = paste0(input$search, " ", "County,TX")
-        county = as.data.frame(county)
-        target_pos <- county |> 
-               tidygeocoder::geocode(address =  county, method = "osm")
+        county_selected = county_lonlat |> filter(County == input$search)
         ZOOM = 11
-        LAT = target_pos$lat
-        LONG = target_pos$long
+        LAT = county_selected$lat_c
+        LONG = county_selected$long
       }
       
       # Map Design -----------------------------------------------------

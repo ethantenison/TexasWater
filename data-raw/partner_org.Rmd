@@ -20,6 +20,7 @@ library(janitor)
 library(tidyverse)
 library(ggmap)
 library(zipcodeR)
+library(tidygeocoder)
 ```
 
 # TRWA data 
@@ -131,7 +132,7 @@ df3
 
 
 # Datatable
-
+*This can take a long time too!*
 ```{r data_4_table}
 
 df <- org |> 
@@ -149,9 +150,23 @@ df2 <- df |>
 
 df <- df |> 
   bind_rows(df2) |> 
-  unnest(County)
+  unnest(County) |> 
+  mutate(county_name = paste0(County, " ", "County,TX")) |> 
+  tidygeocoder::geocode(address =  county_name, method = "osm")
 
+df <- df |> 
+  rename(lat = "lat...7",
+         lat_c = "lat...10")
+
+county_lonlat <- df |> 
+  select(County, lat_c, long) |> 
+  distinct()
+
+```
+
+```{r}
 write.csv(df, "data/organization.csv", row.names = FALSE)
+write.csv(county_lonlat, "data/county_lonlat.csv", row.names = FALSE)
 
 ```
 
