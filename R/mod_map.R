@@ -21,17 +21,19 @@ mod_map_ui <- function(id, height) {
                             style = "margin: 7px 0 0 0;",
                             div(
                               style = "float:right; font-size: 16px;",
+                              div(
+                                style = "margin-bottom: -5px;",
                               prettyRadioButtons(
                                 inputId = ns("search_control"),
                                 choices = c("County", "Organization"),
                                 selected = "County",
-                                label = "Search By:",
+                                label = "Search by:",
                                 width = "100%",
                                 animation = "jelly",
                                 inline = TRUE
-                              ),
+                              )),
                               div(
-                                style = "margin: -5px",
+                                style = "margin: -5px;",
                               br()),
                               selectizeInput(
                                 ns("search"),
@@ -42,18 +44,7 @@ mod_map_ui <- function(id, height) {
                                 width = "100%",
                                 options = list(allowEmptyOption = FALSE,
                                                placeholder = "Search...")
-                              ),
-                              # div(
-                              #   style = "margin-top:-15px;",
-                              #   searchInput(
-                              #     ns("search_bar"),
-                              #     label = "",
-                              #     placeholder = "Enter Address...",
-                              #     width = "200px",
-                              #     btnSearch = icon("search"),
-                              #     btnReset = icon("remove")
-                              #   )
-                              # )
+                              )
                             ),
                           )
                         )))
@@ -135,6 +126,7 @@ mod_map_server <- function(id,data,geo, county) {
         na.color = rgb(0, 0, 0, 0)
       )
     })
+    
     # River Mapping -----------------------------------------------------
     gon_line <- function(x) {
       if (geo() == "Rivers") {
@@ -274,7 +266,7 @@ mod_map_server <- function(id,data,geo, county) {
           label = ~ paste0(data()$Organization),
           popup = ~ paste0(data()$Organization)
         )
-      
+
       
     })
     
