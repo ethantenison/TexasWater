@@ -26,6 +26,7 @@ Imports:
     sf,
     shiny (>= 1.6.0),
     shinydashboard,
+    shinyjs,
     shinythemes,
     shinyWidgets,
     stringr,

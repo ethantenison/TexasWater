@@ -4,10 +4,10 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @import bslib
+#' @import shinyjs
 #' 
 #' @noRd
 app_ui <- function(request) {
-  
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
@@ -24,8 +24,10 @@ app_ui <- function(request) {
       fluidRow(
         style = "margin: 0;",
         column(
-          width = 8,
+          width = 4,
         h1("The Texas Water Sector")),
+        column(
+          width = 4),
         column(
           width = 4
         )
