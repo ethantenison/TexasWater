@@ -290,6 +290,13 @@ mod_map_server <- function(id,data,geo,county, focus) {
           radius = 4,
           label = ~ paste0(data()$Organization),
           popup = ~ paste0(data()$Organization)
+        ) |> 
+        addLegend(
+          data = data(),
+          "bottomright",
+          pal = pal_org(),
+          values = data()$Sector,
+          title = "Sector"
         )
 
       
