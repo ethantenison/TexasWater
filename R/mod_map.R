@@ -52,7 +52,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id,data,geo, county) {
+mod_map_server <- function(id,data,geo,county, focus) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -106,25 +106,50 @@ mod_map_server <- function(id,data,geo, county) {
     })
     
     
-    met_pallete <- MetBrewer::met.brewer(name="Isfahan2",n=20)
-    met_pallete <- as.character(met_pallete)
     
     # Color Palettes -----------------------------------------------------
+    met_pallete_geo <- MetBrewer::met.brewer(name="Isfahan2",n=20)
+    met_pallete_geo <- as.character(met_pallete_geo)
+    
+    met_pallete_org <- MetBrewer::met.brewer(name="Isfahan2",n=8)
+    met_pallete_org <- as.character(met_pallete_org)
+    
+    shadesOfGrey <- colorRampPalette(c("grey0", "grey100"))
+    shadesOfGrey2 <- colorRampPalette(c("grey0", "grey50"))
+    
     pal <- reactive({
+      if(focus() == FALSE) {
       colorFactor(
-        palette = met_pallete,
+        palette = met_pallete_geo,
         reverse = FALSE,
         domain = map_data()$name,
         na.color = rgb(0, 0, 0, 0)
       )
+      } else {
+        colorFactor(
+          palette = shadesOfGrey(20),
+          reverse = FALSE,
+          domain = map_data()$name,
+          na.color = rgb(0, 0, 0, 0)
+        )
+      }
     })
     pal_org <- reactive({
+      if(focus() == FALSE) { 
+        colorFactor(
+          palette = shadesOfGrey2(5),
+          reverse = FALSE,
+          domain = data()$Sector,
+          na.color = rgb(0, 0, 0, 0)
+        )
+        } else {
       colorFactor(
-        palette = met_pallete,
+        palette = met_pallete_org,
         reverse = FALSE,
-        domain = data()$Type,
+        domain = data()$Sector,
         na.color = rgb(0, 0, 0, 0)
       )
+        }
     })
     
     # River Mapping -----------------------------------------------------
@@ -259,8 +284,8 @@ mod_map_server <- function(id,data,geo, county) {
           stroke = FALSE,
           weight = 3,
           opacity = .7,
-          color = "black",
-          fillColor = ~ "black",
+          color = ~ pal_org()(data()$Sector),
+          fillColor = ~ pal_org()(data()$Sector),
           fillOpacity = .7,
           radius = 4,
           label = ~ paste0(data()$Organization),

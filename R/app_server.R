@@ -18,7 +18,8 @@ app_server <- function( input, output, session ) {
   org_choices <- controls$org_choices
   geo <- controls$geo
   county <- controls$county
+  focus <- controls$focus
   
-  mod_map_server("map", org_choices, geo, county)
+  mod_map_server("map", org_choices, geo, county, focus)
 
 }

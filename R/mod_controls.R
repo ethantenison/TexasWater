@@ -18,7 +18,7 @@ mod_controls_ui <- function(id) {
   
   tagList(
     fluidRow(
-      column(width =12,
+      column(width =8,
              style = "margin: -5px 0px 5px 0",
              pickerInput(
                ns("sector"),
@@ -28,12 +28,23 @@ mod_controls_ui <- function(id) {
                multiple  = FALSE,
                selected = "All",
                width = "175px"
-             ),
+             )),
+      column(width = 4,
+             div(
+               style = "float:right",
+             materialSwitch(
+               ns("focus"),
+               label = strong("Focus"),
+               value = TRUE,
+               inline = TRUE
+             ))
+      )),
+      fluidRow(
              p("Etiam purus enim, accumsan vel tortor in, sollicitudin porttitor
                sapien. Aliquam vitae dignissim felis. Nulla facilisi. Fusce
                ultricies nulla massa. Sed convallis ante mi, vel mattis turpis
                convallis eu. Suspendisse ac metus nec augue porta facilisis.
-               Quisque laoreet sagittis nunc et maximus. Proin nec consectetur tellus."))
+               Quisque laoreet sagittis nunc et maximus. Proin nec consectetur tellus.")
     ),
     fluidRow(
         column(
@@ -55,13 +66,15 @@ mod_controls_ui <- function(id) {
           width = "175px"
         )),
         column(width = 4,
+               div(
+                 style = "float:right",
         materialSwitch(
           ns("counties"),
           label = strong("Counties"),
           value = TRUE,
           inline = TRUE
         )
-        )
+        ))
     ),
     fluidRow(
       column(
@@ -102,7 +115,8 @@ mod_controls_server <- function(id) {
     list(
       org_choices = org_choices,
       geo = reactive(input$admin),
-      county = reactive(input$counties)
+      county = reactive(input$counties),
+      focus = reactive((input$focus))
       
     )
     
