@@ -13,28 +13,25 @@
 mod_map_ui <- function(id, height) {
   ns <- NS(id)
   tagList(leafletOutput(ns("map"), height = height),
-          absolutePanel(top = -75, right = 20,left = 5, bottom = "auto",
+          absolutePanel(top = 5, right = 20,left = 5, bottom = "auto",
                         fluidRow(
                           column(width = 2),
                           column(
                             width = 10,
                             style = "margin: 7px 0 0 0;",
                             div(
-                              style = "float:right; font-size: 16px;",
+                              style = "float:right; font-size: 16px;color: #264D96;",
                               div(
                                 style = "margin-bottom: -5px;",
                               prettyRadioButtons(
                                 inputId = ns("search_control"),
                                 choices = c("County", "Organization"),
                                 selected = "County",
-                                label = "Search by:",
+                                label = strong("Search by:"),
                                 width = "100%",
                                 animation = "jelly",
                                 inline = TRUE
                               )),
-                              div(
-                                style = "margin: -5px;",
-                              br()),
                               selectizeInput(
                                 ns("search"),
                                 label = NULL,
