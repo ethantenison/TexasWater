@@ -19,7 +19,7 @@ usethis::use_package("shinyjs")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module( name = "map" ) # Name of the module
+golem::add_module( name = "feedback" ) # Name of the module
 golem::add_module( name = "table") # Name of the module
 
 ## Add helper functions ----

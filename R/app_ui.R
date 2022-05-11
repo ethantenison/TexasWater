@@ -52,8 +52,12 @@ app_ui <- function(request) {
                     ))),
         ),
         tabPanel(
-          title = shiny::tags$u("Feedback"),
+          title = shiny::tags$u("Definitions"),
           "Enter definitions here!"
+        ),
+        tabPanel(
+          title = shiny::tags$u("Feedback"),
+          mod_feedback_ui("feedback")
       )
     )
   )

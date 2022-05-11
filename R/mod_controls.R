@@ -97,20 +97,12 @@ mod_controls_ui <- function(id) {
       shinyjs::extendShinyjs(text = jsToggleFS, functions = "toggleFullScreen"),
       hr(style = "margin-top: 5px; margin-bottom: 5px; width:100%"),
       column(
-        width = 6,
+        width = 12,
       HTML(
         "<button type='button' class='btn btn-default action-button shiny-bound-input' style='display: block;
         margin: 6px 5px 6px 15px; width: 100%;' onclick = 'shinyjs.toggleFullScreen();
         '><i class='fa fa-expand fa-pull-left'></i> Fullscreen</button>"
-      )),
-      column(
-        width = 6,
-        style = "margin-top: 6px; width: 100%;",
-        actionButton("full", 
-                     label = "Add Organization",
-                     class = "btn-default",
-                     icon = icon("plus"))
-      )
+      ))
     )
     
   )
