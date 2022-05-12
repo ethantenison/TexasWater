@@ -30,7 +30,7 @@ mod_controls_ui <- function(id) {
   
   tagList(
     fluidRow(
-      column(width =8,
+      column(width =10,
              pickerInput(
                ns("sector"),
                label = strong("Sector"),
@@ -38,9 +38,9 @@ mod_controls_ui <- function(id) {
                            "Groundwater"),
                multiple  = FALSE,
                selected = "All",
-               width = "175px"
+               width = "100%"
              )),
-      column(width = 4,
+      column(width = 2,
              materialSwitch(
                ns("focus"),
                label = strong("Org Focus"),
@@ -57,24 +57,24 @@ mod_controls_ui <- function(id) {
     ),
     fluidRow(
         column(
-          width = 8,
+          width = 10,
         pickerInput(
           ns("admin"),
           label = strong("Geography"),
           choices = c(
             "Aquifers",
             "Counties",
-            "GCDs",
+            "Ground Water Conservation Districts" = "GCDs",
+            "Regional Water Planning Groups" = "RWPGs",
+            "Regional Flood Planning Groups" ="RFPGs",
             "Rivers",
-            "River Basins",
-            "RWPGs",
-            "RFPGs"
+            "River Basins"
           ),
           multiple  = FALSE,
           selected = "River Basins",
-          width = "175px"
+          width = "100%"
         )),
-        column(width = 4,
+        column(width = 2,
         materialSwitch(
           ns("counties"),
           label = strong("Counties"),
@@ -90,6 +90,31 @@ mod_controls_ui <- function(id) {
           bibendum lacinia magna, in ornare felis cursus at. Duis id pharetra
           elit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
           Suspendisse sed porta odio, id sagittis leo.")
+      )
+    ),
+    fluidRow(
+      column(
+        width = 10,
+        prettyRadioButtons(
+          inputId = ns("search_control"),
+          choices = c("County", "Organization"),
+          selected = "County",
+          label = strong("Search by:"),
+          width = "100%",
+          animation = "jelly",
+          inline = TRUE
+        ),
+        pickerInput(
+          ns("search"),
+          label = NULL,
+          choices = "",
+          multiple = FALSE,
+          selected = NULL,
+          width = "100%",
+          options = pickerOptions(
+                         liveSearch = TRUE,
+                         liveSearchPlaceholder = "Search...")
+        )
       )
     ),
     fluidRow(
@@ -118,12 +143,31 @@ mod_controls_server <- function(id) {
     orgs <- readr::read_csv("data/organization.csv")
     
     # Sector selection ---------------------------------------------------------
-    
     # reactive to store choices of the org input field
     org_choices <- reactive({
       req(orgs$Sector)
         d <- orgs %>% filter(search == input$sector) %>% arrange(Organization)
         d
+    })
+    
+    # populate the selectizeInput choices
+    observe({
+      current_selected <- isolate(input$search)
+      if (input$search_control == "Organization") {
+        updatePickerInput(
+          session,
+          "search",
+          choices = unique(sort(org_choices()$Organization)),
+          selected = current_selected
+        )
+      } else if (input$search_control == "County") {
+        updatePickerInput(
+          session,
+          "search",
+          choices = unique(sort(org_choices()$County)),
+          selected = current_selected
+        )
+      }
     })
     
     #Objects sent to other modules 

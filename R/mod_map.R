@@ -101,9 +101,6 @@ mod_map_server <- function(id,data,geo,county, focus) {
         
       }
     })
-    
-    
-    
     # Color Palettes -----------------------------------------------------
     met_pallete_geo <- MetBrewer::met.brewer(name="Isfahan2",n=20)
     met_pallete_geo <- as.character(met_pallete_geo)
@@ -111,7 +108,7 @@ mod_map_server <- function(id,data,geo,county, focus) {
     met_pallete_org <- MetBrewer::met.brewer(name="Isfahan2",n=8)
     met_pallete_org <- as.character(met_pallete_org)
     
-    shadesOfGrey <- colorRampPalette(c("grey0", "grey100"))
+    shadesOfGrey <- colorRampPalette(c("grey50","#324E92", "#35A7A3"))
     shadesOfGrey2 <- colorRampPalette(c("grey0", "grey50"))
     
     pal <- reactive({

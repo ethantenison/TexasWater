@@ -25,8 +25,17 @@ app_ui <- function(request) {
         base_font = font_google("Prompt"),
         code_font = font_google("JetBrains Mono")
       ),
+      ##-- Logo ----
+      list(tags$head(HTML('<link rel="icon", href="www/texas_water.png",
+                        type="image/png" />'))),
+      div(style="padding: 1px 0px; width: '100%'",
+          titlePanel(
+            title="", windowTitle = "Texas Water"
+          )
+      ),
       navbarPage(
-        "Texas Water Sector",
+        div(img(src="www/texas_water.png",
+                height = "75px"), style = "padding-left:50px;"),
         id = "nav",
         tabPanel(
           title = shiny::tags$u("Map"),
