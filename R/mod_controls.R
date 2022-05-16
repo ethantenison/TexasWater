@@ -170,13 +170,16 @@ mod_controls_server <- function(id) {
       }
     })
     
+    print(reactive(input$search))
+    
     #Objects sent to other modules 
     list(
       org_choices = org_choices,
       geo = reactive(input$admin),
       county = reactive(input$counties),
-      focus = reactive((input$focus))
-      
+      focus = reactive(input$focus),
+      search = reactive(input$search),
+      search_control = reactive(input$search_control)
     )
     
   })

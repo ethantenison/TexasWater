@@ -49,7 +49,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id,data,geo,county, focus) {
+mod_map_server <- function(id,data,geo,county, focus, search, search_control) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -186,17 +186,17 @@ mod_map_server <- function(id,data,geo,county, focus) {
     }
     # Zoom -----------------------------------------------------  
     output$map <- renderLeaflet({
-      if (input$search == "Search..." |input$search == "") {
+      if (search() == "Nothing selected" |search() == "" | search() == "Search...") {
         ZOOM = 6
         LAT = 30.997210
         LONG = -99.808835
-      } else if (input$search_control == "Organization") {
-        org_selected = data() |> filter(Organization == input$search)
+      } else if (search_control() == "Organization") {
+        org_selected = data() |> filter(Organization == search())
         LAT = org_selected$lat
         LONG = org_selected$lon
         ZOOM = 11
-      } else if (input$search_control == "County") {
-        county_selected = county_lonlat |> filter(County == input$search)
+      } else if (search_control() == "County") {
+        county_selected = county_lonlat |> filter(County == search())
         ZOOM = 11
         LAT = county_selected$lat_c
         LONG = county_selected$long
@@ -292,8 +292,6 @@ mod_map_server <- function(id,data,geo,county, focus) {
           values = data()$Sector,
           title = "Sector"
         )
-
-      
     })
     
   })
