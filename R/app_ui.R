@@ -67,6 +67,15 @@ app_ui <- function(request) {
         tabPanel(
           title = shiny::tags$u("Feedback"),
           mod_feedback_ui("feedback")
+      ),
+      div(
+        style = "position: absolute; right: 65px; top: 65px",
+      materialSwitch(
+        "focus",
+        label = strong("Color Palette"),
+        value = TRUE,
+        inline = TRUE
+      )
       )
     )
   )

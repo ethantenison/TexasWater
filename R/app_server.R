@@ -15,7 +15,7 @@ app_server <- function( input, output, session ) {
   
   org_choices <- controls$org_choices
   geo <- controls$geo
-  focus <- controls$focus
+  focus <- reactive(input$focus)
   search <- controls$search
   
   mod_map_server("map", org_choices, geo, focus, search)

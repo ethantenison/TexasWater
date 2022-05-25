@@ -88,7 +88,7 @@ mod_map_server <- function(id,data,geo, focus, search) {
         domain = data()$Sector,
         na.color = rgb(0, 0, 0, 0)
       )
-        }
+}
     })
     
     # River Mapping -----------------------------------------------------
@@ -195,7 +195,6 @@ mod_map_server <- function(id,data,geo, focus, search) {
               popup = map_data()$name,
               label = map_data()$name
             )
-          
         } %>%
         clearMarkers() |> #you have to clear previously drawn markers
         addCircleMarkers(
@@ -220,10 +219,8 @@ mod_map_server <- function(id,data,geo, focus, search) {
           title = "Sector"
         )
     })
-    
   })
 }
-    
 ## To be copied in the UI
 # mod_map_ui("map_ui_1")
     

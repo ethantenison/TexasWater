@@ -45,13 +45,7 @@ mod_controls_ui <- function(id) {
                selected = "All",
                width = "100%"
              )),
-      column(width = 2,
-             materialSwitch(
-               ns("focus"),
-               label = strong("Org Focus"),
-               value = TRUE,
-               inline = TRUE
-             )
+      column(width = 2
       )),
       fluidRow(
         column(
