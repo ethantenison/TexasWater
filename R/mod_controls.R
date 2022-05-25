@@ -95,15 +95,6 @@ mod_controls_ui <- function(id) {
     fluidRow(
       column(
         width = 10,
-        prettyRadioButtons(
-          inputId = ns("search_control"),
-          choices = c("County", "Organization"),
-          selected = "County",
-          label = strong("Search by:"),
-          width = "100%",
-          animation = "jelly",
-          inline = TRUE
-        ),
         pickerInput(
           ns("search"),
           label = NULL,
@@ -156,24 +147,13 @@ mod_controls_server <- function(id) {
     # populate the selectizeInput choices
     observe({
       current_selected <- isolate(input$search)
-      if (input$search_control == "Organization") {
-        updatePickerInput(
-          session,
-          "search",
-          choices = unique(sort(org_choices()$Organization)),
-          selected = current_selected
-        )
-      } else if (input$search_control == "County") {
         updatePickerInput(
           session,
           "search",
           choices = unique(sort(org_choices()$County)),
           selected = current_selected
         )
-      }
     })
-    
-    print(reactive(input$search))
     
     #Objects sent to other modules 
     list(
@@ -181,8 +161,7 @@ mod_controls_server <- function(id) {
       geo = reactive(input$admin),
       county = reactive(input$counties),
       focus = reactive(input$focus),
-      search = reactive(input$search),
-      search_control = reactive(input$search_control)
+      search = reactive(input$search)
     )
     
   })

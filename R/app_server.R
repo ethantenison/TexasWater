@@ -20,8 +20,7 @@ app_server <- function( input, output, session ) {
   county <- controls$county
   focus <- controls$focus
   search <- controls$search
-  search_control <- controls$search_control
   
-  mod_map_server("map", org_choices, geo, county, focus, search, search_control)
+  mod_map_server("map", org_choices, geo, county, focus, search)
 
 }

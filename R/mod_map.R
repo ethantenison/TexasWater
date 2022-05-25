@@ -17,7 +17,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id,data,geo,county, focus, search, search_control) {
+mod_map_server <- function(id,data,geo,county, focus, search) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -136,12 +136,7 @@ mod_map_server <- function(id,data,geo,county, focus, search, search_control) {
         ZOOM = 6
         LAT = 30.997210
         LONG = -99.808835
-      } else if (search_control() == "Organization") {
-        org_selected = data() |> filter(Organization == search())
-        LAT = org_selected$lat
-        LONG = org_selected$lon
-        ZOOM = 11
-      } else if (search_control() == "County") {
+      } else { 
         county_selected = county_lonlat |> filter(County == search())
         ZOOM = 11
         LAT = county_selected$lat_c
