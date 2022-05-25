@@ -17,7 +17,7 @@ mod_map_ui <- function(id, height) {
 #' map Server Functions
 #'
 #' @noRd 
-mod_map_server <- function(id,data,geo,county, focus, search) {
+mod_map_server <- function(id,data,geo, focus, search) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -131,8 +131,7 @@ mod_map_server <- function(id,data,geo,county, focus, search) {
     }
     # Zoom -----------------------------------------------------  
     output$map <- renderLeaflet({
-      if (search() == "Nothing selected" |search() == "" | search() == "Search..." |
-          is.null(search()) == TRUE) {
+      if (search() == "All") {
         ZOOM = 6
         LAT = 30.997210
         LONG = -99.808835
@@ -151,8 +150,6 @@ mod_map_server <- function(id,data,geo,county, focus, search) {
         addProviderTiles(providers$CartoDB.Positron) |>
         clearShapes() |>
         clearControls() %>%
-        {
-          if (county() == TRUE)
             addPolygons(
               map = .,
               data = counties_shape,
@@ -161,18 +158,7 @@ mod_map_server <- function(id,data,geo,county, focus, search) {
               smoothFactor = 0.5,
               opacity = 0.3,
               fillOpacity = 0
-            )
-          else
-            addPolygons(
-              map = .,
-              data = counties_shape,
-              color = "#2389da",
-              weight = 0,
-              smoothFactor = 0.5,
-              opacity = 0,
-              fillOpacity = 0
-            )
-        } %>%
+            ) %>%
         {
           if (geo() == "Rivers")
             addPolylines(

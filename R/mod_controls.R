@@ -27,6 +27,11 @@ mod_controls_ui <- function(id) {
  exitFS.call(document);
  }
  }'
+  zoom_choices <- readr::read_csv("data/organization.csv") |> 
+    select(County, county_name, lat_c, long) %>% 
+    add_row(County = "All", county_name = "All", lat_c = 30.997210, 
+            long = -99.808835)
+    
   
   tagList(
     fluidRow(
@@ -74,13 +79,7 @@ mod_controls_ui <- function(id) {
           selected = "River Basins",
           width = "100%"
         )),
-        column(width = 2,
-        materialSwitch(
-          ns("counties"),
-          label = strong("Counties"),
-          value = TRUE,
-          inline = TRUE
-        )
+        column(width = 2
         )
     ),
     fluidRow(
@@ -97,10 +96,10 @@ mod_controls_ui <- function(id) {
         width = 10,
         pickerInput(
           ns("search"),
-          label = NULL,
-          choices = "",
+          label = strong("Select County"),
+          choices = unique(sort(zoom_choices$County)),
           multiple = FALSE,
-          selected = NULL,
+          selected = "All",
           width = "100%",
           options = pickerOptions(
                          liveSearch = TRUE,
@@ -121,7 +120,6 @@ mod_controls_ui <- function(id) {
         '><i class='fa fa-expand fa-pull-left'></i> Fullscreen</button>"
       ))
     )
-    
   )
 }
 
@@ -142,24 +140,11 @@ mod_controls_server <- function(id) {
         d
     })
     
-
-    
-    # populate the selectizeInput choices
-    observe({
-      current_selected <- isolate(input$search)
-        updatePickerInput(
-          session,
-          "search",
-          choices = unique(sort(org_choices()$County)),
-          selected = current_selected
-        )
-    })
     
     #Objects sent to other modules 
     list(
       org_choices = org_choices,
       geo = reactive(input$admin),
-      county = reactive(input$counties),
       focus = reactive(input$focus),
       search = reactive(input$search)
     )
