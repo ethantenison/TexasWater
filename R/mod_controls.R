@@ -113,7 +113,8 @@ mod_controls_ui <- function(id) {
           width = "100%",
           options = pickerOptions(
                          liveSearch = TRUE,
-                         liveSearchPlaceholder = "Search...")
+                         liveSearchPlaceholder = "Search..."
+                         )
         )
       )
     ),
@@ -149,6 +150,8 @@ mod_controls_server <- function(id) {
         d <- orgs %>% filter(search == input$sector) %>% arrange(Organization)
         d
     })
+    
+
     
     # populate the selectizeInput choices
     observe({

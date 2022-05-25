@@ -12,39 +12,7 @@
 #' @import MetBrewer
 mod_map_ui <- function(id, height) {
   ns <- NS(id)
-  tagList(leafletOutput(ns("map"), height = height),
-          absolutePanel(top = 5, right = 20,left = 5, bottom = "auto",
-                        fluidRow(
-                          column(width = 2),
-                          column(
-                            width = 10,
-                            style = "margin: 7px 0 0 0;",
-                            div(
-                              style = "float:right; font-size: 16px;color: #264D96;",
-                              div(
-                                style = "margin-bottom: -5px;",
-                              prettyRadioButtons(
-                                inputId = ns("search_control"),
-                                choices = c("County", "Organization"),
-                                selected = "County",
-                                label = strong("Search by:"),
-                                width = "100%",
-                                animation = "jelly",
-                                inline = TRUE
-                              )),
-                              selectizeInput(
-                                ns("search"),
-                                label = NULL,
-                                choices = "",
-                                multiple = FALSE,
-                                selected = character(0),
-                                width = "100%",
-                                options = list(allowEmptyOption = FALSE,
-                                               placeholder = "Search...")
-                              )
-                            ),
-                          )
-                        )))
+  tagList(leafletOutput(ns("map"), height = height))
 }
 #' map Server Functions
 #'
@@ -76,29 +44,6 @@ mod_map_server <- function(id,data,geo,county, focus, search, search_control) {
         readRDS("./data/counties.rds")
       } else if (geo() == "RFPGs") {
         readRDS("./data/fg.rds")
-      }
-    })
-    # Search Controls -----------------------------------------------------
-    # populate the selectizeInput choices
-    observe({
-      current_selected <- isolate(input$search)
-      if (input$search_control == "Organization") {
-        updateSelectizeInput(
-          session,
-          "search",
-          choices = data()$Organization,
-          selected = current_selected,
-          server = TRUE
-        )
-      } else if (input$search_control == "County") {
-        updateSelectizeInput(
-          session,
-          "search",
-          choices = sort(data()$County),
-          selected = current_selected,
-          server = TRUE
-        )
-        
       }
     })
     # Color Palettes -----------------------------------------------------
@@ -186,7 +131,8 @@ mod_map_server <- function(id,data,geo,county, focus, search, search_control) {
     }
     # Zoom -----------------------------------------------------  
     output$map <- renderLeaflet({
-      if (search() == "Nothing selected" |search() == "" | search() == "Search...") {
+      if (search() == "Nothing selected" |search() == "" | search() == "Search..." |
+          is.null(search()) == TRUE) {
         ZOOM = 6
         LAT = 30.997210
         LONG = -99.808835
