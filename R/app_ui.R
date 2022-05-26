@@ -40,7 +40,7 @@ app_ui <- function(request) {
         tabPanel(
           title = shiny::tags$u("Map"),
           sidebarLayout(
-          sidebarPanel(width = 6,
+          sidebarPanel(width = 5,
                        fluidRow(
                          style = "margin: 0; height: 100%",
                          column(
@@ -49,13 +49,13 @@ app_ui <- function(request) {
                            mod_controls_ui("controls")
                          )
                        )),
-          mainPanel(width = 6,
+          mainPanel(width = 7,
                     fluidRow(
                       style = "margin: 0;",
                       column(
                         width = 12,
                         style = "height: 100%;",
-                        mod_map_ui("map", height = "750"),
+                        mod_map_ui("map", height = "802"),
                         mod_selector_ui("selector")
                       )
                     ))),
