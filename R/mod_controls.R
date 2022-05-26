@@ -35,7 +35,7 @@ mod_controls_ui <- function(id) {
   
   tagList(
     fluidRow(
-      column(width =10,
+      column(width =6,
              pickerInput(
                ns("sector"),
                label = strong("Sector"),
@@ -45,18 +45,28 @@ mod_controls_ui <- function(id) {
                selected = "All",
                width = "100%"
              )),
-      column(width = 2
-      )),
+      column(width =6, 
+             pickerInput(
+               ns("search"),
+               label = strong("County"),
+               choices = unique(sort(zoom_choices$County)),
+               multiple = FALSE,
+               selected = "All",
+               width = "100%",
+               options = pickerOptions(
+                 liveSearch = TRUE,
+                 liveSearchPlaceholder = "Search..."
+               )
+             ))),
       fluidRow(
         column(
           width = 12,
              p("Etiam purus enim, accumsan vel tortor in, sollicitudin porttitor
-               sapien. Aliquam vitae dignissim felis. Nulla facilisi.
-               Quisque laoreet sagittis nunc et maximus. Proin nec consectetur tellus."))
+               sapien. Aliquam vitae dignissim felis."))
     ),
     fluidRow(
         column(
-          width = 10,
+          width = 12,
         pickerInput(
           ns("admin"),
           label = strong("Geography"),
@@ -72,34 +82,13 @@ mod_controls_ui <- function(id) {
           multiple  = FALSE,
           selected = "River Basins",
           width = "100%"
-        )),
-        column(width = 2
-        )
+        ))
     ),
     fluidRow(
       column(
         width = 12,
         p("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-          bibendum lacinia magna, in ornare felis cursus at. Duis id pharetra
-          elit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-          Suspendisse sed porta odio, id sagittis leo.")
-      )
-    ),
-    fluidRow(
-      column(
-        width = 10,
-        pickerInput(
-          ns("search"),
-          label = strong("Select County"),
-          choices = unique(sort(zoom_choices$County)),
-          multiple = FALSE,
-          selected = "All",
-          width = "100%",
-          options = pickerOptions(
-                         liveSearch = TRUE,
-                         liveSearchPlaceholder = "Search..."
-                         )
-        )
+          bibendum lacinia magna, in ornare felis cursus at.")
       )
     ),
     fluidRow(
@@ -110,7 +99,7 @@ mod_controls_ui <- function(id) {
         width = 12,
       HTML(
         "<button type='button' class='btn btn-default action-button shiny-bound-input' style='display: block;
-        margin: 6px 5px 6px 15px; width: 100%;' onclick = 'shinyjs.toggleFullScreen();
+        margin: 6px 6px 6px 0px; width: 100%;' onclick = 'shinyjs.toggleFullScreen();
         '><i class='fa fa-expand fa-pull-left'></i> Fullscreen</button>"
       ))
     )

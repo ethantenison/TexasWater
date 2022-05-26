@@ -1,0 +1,69 @@
+---
+title: "Updated Org List"
+output: html_document
+date: '2022-05-25'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+library(readxl)
+library(sf)
+library(janitor)
+library(tidyverse)
+library(ggmap)
+library(zipcodeR)
+library(tidygeocoder)
+```
+
+## Master List
+```{r}
+master_raw <- read_excel("data-raw/TX water gov Master List_May 25.xlsx")
+
+glimpse(master)
+```
+## Initial Data cleaning
+
+There are over 60 different unique types 
+
+```{r}
+master <- master_raw |> 
+  select(organization, address, zip_code, county, sector,
+         org_type, longitude, latitude) |> 
+  #renaming to fit old column headers 
+  rename(Organization = organization, Address = address, County = county, 
+         Sector = sector, Type = org_type, lon = longitude, lat = latitude) |> 
+  mutate(Type = case_when(
+    is.na(Type) ~ "N/A",
+    TRUE ~ Type
+  ),
+  County = case_when(
+    County == "cogdoches" ~ "Nacogdoches",
+    TRUE ~ County
+  )) |> 
+  mutate(county_name = paste0(County, " ", "County,TX"))
+
+#separate out those with and without lonlat 
+with_lonlat <- master |> 
+  filter(!is.na(lon))
+
+wo_lonlat <- master |> 
+  filter(is.na(lon))
+
+```
+
+# Tidygeocode 
+
+Honestly there are just too many errors to deal with 
+
+```{r}
+
+#some have address but not lonlat 
+wo_lonlat_add2 <- wo_lonlat |> 
+  filter(!is.na(Address)) |> 
+  mutate(address_exct = paste0(Address, ", ", County, " ", "County,TX")) |> 
+  tidygeocoder::geocode(address =  address_exct, method = "osm")
+
+
+```
