@@ -148,6 +148,7 @@ df <- org |>
 df2 <- df |> 
   mutate(search = "All")
 
+#getting county latlon
 df <- df |> 
   bind_rows(df2) |> 
   unnest(County) |> 

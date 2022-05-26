@@ -27,7 +27,7 @@ mod_controls_ui <- function(id) {
  exitFS.call(document);
  }
  }'
-  zoom_choices <- readr::read_csv("data/organization.csv") |> 
+  zoom_choices <- readr::read_csv("data/organization_updated.csv") |> 
     select(County, county_name, lat_c, long) %>% 
     add_row(County = "All", county_name = "All", lat_c = 30.997210, 
             long = -99.808835)
@@ -39,8 +39,8 @@ mod_controls_ui <- function(id) {
              pickerInput(
                ns("sector"),
                label = strong("Sector"),
-               choices = c("All", "Rural", "Agriculture",
-                           "Groundwater"),
+               choices = c("All", "Agriculture","Energy", "Flood",
+                           "Groundwater", "Policy", "Rural"),
                multiple  = FALSE,
                selected = "All",
                width = "100%"
@@ -63,6 +63,12 @@ mod_controls_ui <- function(id) {
           width = 12,
              p("Etiam purus enim, accumsan vel tortor in, sollicitudin porttitor
                sapien. Aliquam vitae dignissim felis."))
+    ),
+    fluidRow(
+      column(
+        width = 12,
+        reactableOutput(ns("table"), width = "auto", height = "400px", inline = FALSE)
+      )
     ),
     fluidRow(
         column(
@@ -113,7 +119,7 @@ mod_controls_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
-    orgs <- readr::read_csv("data/organization.csv")
+    orgs <- readr::read_csv("data/organization_updated.csv")
     
     # Sector selection ---------------------------------------------------------
     # reactive to store choices of the org input field
@@ -123,6 +129,62 @@ mod_controls_server <- function(id) {
         d
     })
     
+    # Table --------------------------------------------------------------------
+    
+    output$table <- renderReactable({
+        onclick_js <- JS(
+          glue(
+            "function(rowInfo, colInfo) {
+            // Only handle click events on the 'mb' column
+            if (colInfo.id !== 'Organization') {
+              return
+            }
+
+            // Send the click event to Shiny, which will be available in input$show_details
+            // Note that the row index starts at 0 in JavaScript, so we add 1
+            if (window.Shiny) {
+              Shiny.setInputValue('<<< ns('show_details') >>>', { index: rowInfo.index + 1, rnd: Math.random() })
+            }
+          }",
+          .open = "<<<",
+          .close = ">>>"
+          )
+        )
+        reactable(
+          org_choices(),
+          compact = TRUE,
+           theme = reactableTheme(
+             backgroundColor = "#264D96",
+             highlightColor = "#2BADBD",
+             color = "#FFFFFF"
+           ),
+          defaultColDef = colDef(minWidth = 20,
+                                 footerStyle = "font-weight: bold"),
+          highlight = TRUE,
+          defaultPageSize = 10,
+          paginationType = "simple",
+          searchable = TRUE,
+          wrap = TRUE,
+          onClick = onclick_js,
+          columns = list(
+            Organization = colDef(
+              minWidth = 50,
+              class = "area-link",
+              style = list(cursor = "pointer")
+            ),
+            # overrides the default
+            Address = colDef(show = F),
+            lon = colDef(show = F),
+            lat = colDef(show = F),
+            search = colDef(show = F),
+            Sector = colDef(show = T),
+            county_name = colDef(show = F),
+            lat_c = colDef(show = F),
+            long = colDef(show = F),
+            Type = colDef(show = T)
+          ),
+        )
+      })
     
     #Objects sent to other modules 
     list(

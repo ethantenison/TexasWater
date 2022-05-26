@@ -40,6 +40,8 @@ master <- master_raw |>
   ),
   County = case_when(
     County == "cogdoches" ~ "Nacogdoches",
+    County == "varro" ~ "Navarro", 
+    County == "McLenn" ~ "McLennan",
     TRUE ~ County
   )) |> 
   mutate(county_name = paste0(County, " ", "County,TX"))
@@ -65,5 +67,49 @@ wo_lonlat_add2 <- wo_lonlat |>
   mutate(address_exct = paste0(Address, ", ", County, " ", "County,TX")) |> 
   tidygeocoder::geocode(address =  address_exct, method = "osm")
 
+
+```
+
+
+# Adding county lonlat
+
+```{r}
+
+
+#Takes awhile 
+df <- with_lonlat |> 
+  tidygeocoder::geocode(address =  county_name, method = "osm") 
+
+df <- df |> 
+  dplyr::rename(lat = "lat...8",
+         lat_c = "lat...10")
+
+df$random <- sample(6, size = nrow(df), replace = TRUE)
+
+df <- df |> 
+  mutate(Sector = case_when(
+    random == 1 ~ "Rural",
+    random == 2 ~ "Agriculture",
+    random == 3 ~ "Energy",
+    random == 4 ~ "Groundwater", 
+    random == 5 ~ "Flood",
+    random == 6 ~ "Policy", 
+    TRUE ~ "None"
+  )) |> 
+  mutate(search = Sector)
+
+df2 <- df |> 
+  mutate(search = "All")
+
+df <- df |> 
+  bind_rows(df2) |> 
+  select(-c(zip_code, random))
+
+```
+
+
+```{r}
+
+write.csv(df, "data/organization_updated.csv", row.names = FALSE)
 
 ```
