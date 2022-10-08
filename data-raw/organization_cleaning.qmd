@@ -1,0 +1,62 @@
+---
+title: "Organization Cleaning"
+format: html
+editor: visual
+---
+
+## Organizations
+
+Structure of old organization data:
+
+"Organization" "Address" "County" "Sector" "Type" "lon" "lat" "county_name" "lat_c" "long" "search"
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(readxl)
+library(sf)
+library(leaflet)
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+
+orgs_raw <- read_excel("orgs_master.xlsx") |> 
+  clean_names()
+
+  met_pallete_geo <- MetBrewer::met.brewer(name="Isfahan2",n=20)
+  met_pallete_geo <- as.character(met_pallete_geo)
+```
+
+```{r, mapview}
+
+pal =       colorFactor(
+  palette = met_pallete_geo,
+  reverse = FALSE,
+  domain = orgs_raw$type,
+  na.color = rgb(0, 0, 0, 0)
+)
+  
+# create map widget with OpenStreetMap tile
+map <- leaflet(orgs_raw) %>%
+  addTiles() %>%
+  addCircleMarkers(
+    lng =  ~ longitude,
+    lat =  ~ latitude,
+    color = ~ type,
+    fillColor = ~ pal(type),
+    fillOpacity = .7,
+    popup =  ~ organization
+  ) %>%
+  addLegend('bottomright', pal=pal, values = ~type)
+
+# print map widget
+map
+
+```
