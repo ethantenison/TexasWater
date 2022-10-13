@@ -19,6 +19,70 @@ library(janitor)
 library(tidyverse)
 library(rmapshaper)
 library(tidygeocoder)
+library(wordcloud)
+library(RColorBrewer)
+library(tm) # to create corpus
+library(wordcloud2)
+library(viridis)
+```
+
+# PWS
+
+Public Water Service Boundaries
+
+```{r}
+
+pws <-
+  st_read("data-raw/shapefiles/PWS_shapefile/PWS_Export.shp") |> 
+  clean_names() |> 
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) 
+
+```
+
+### Most common words
+
+```{r}
+
+# Create a vector containing only the text
+text <- pws$pws_name
+
+# Create a corpus
+docs <- Corpus(VectorSource(text))
+
+# standardize corpus
+docs <- docs %>%
+  tm_map(removeNumbers) %>%
+  tm_map(removePunctuation) %>%
+  tm_map(stripWhitespace)
+docs <- tm_map(docs, content_transformer(tolower))
+docs <- tm_map(docs, removeWords, stopwords("english"))
+
+# create a document matrix
+dtm <- TermDocumentMatrix(docs)
+matrix <- as.matrix(dtm)
+words <- sort(rowSums(matrix), decreasing = TRUE)
+df <- data.frame(word = names(words), freq = words)
+df$word <- as.character(df$word)
+df <- df |> 
+  mutate(freq = case_when(
+         word == "workshop" ~ 7,
+         TRUE ~ freq)) |> 
+  filter(word != "workshops")
+  target <- c("also","really", "helpful", "wasnt", "etc", "asks", "move", "gave", "connect", "fellows")
+  "%ni%" <- Negate("%in%")
+  df <- filter(df, word %ni% target)
+df$word <- as.factor(df$word)
+
+set.seed(27)
+wordcloud(words = df$word,
+            freq = df$freq, 
+            min.freq = 5, 
+            rot.per= 0.4,
+            colors = viridis(8),
+            random.order = FALSE,
+            family = "serif", font = 2)
+
 ```
 
 # GCDs
@@ -160,7 +224,7 @@ plot(wd['name'])
 
 ```
 
-# Regional Flood Planning Groups 
+# Regional Flood Planning Groups
 
 ```{r flood_planning}
 
