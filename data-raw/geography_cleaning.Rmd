@@ -26,6 +26,25 @@ library(wordcloud2)
 library(viridis)
 ```
 
+# Social and Water Boards
+
+```{r}
+
+swcd <-
+  st_read("data-raw/shapefiles/SWCDs/SWCD.shp") |> 
+  clean_names() |> 
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) |> 
+  select(swcd_name, geometry) |> 
+  rename(name = swcd_name)
+
+saveRDS(swcd, "data/swcd.rds")
+
+
+plot(swcd['name'])
+
+```
+
 # PWS
 
 Public Water Service Boundaries
@@ -36,7 +55,15 @@ pws <-
   st_read("data-raw/shapefiles/PWS_shapefile/PWS_Export.shp") |> 
   clean_names() |> 
   st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") |> 
-  ms_simplify(keep = 0.2,keep_shapes = TRUE) 
+  ms_simplify(keep = 0.2,keep_shapes = TRUE) |> 
+  select(pws_name, geometry) |> 
+  rename(name = pws_name)
+
+saveRDS(pws, "data/pws.rds")
+
+
+plot(pws['name'])
+
 
 ```
 

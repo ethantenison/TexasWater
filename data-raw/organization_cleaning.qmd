@@ -16,6 +16,7 @@ library(janitor)
 library(readxl)
 library(sf)
 library(leaflet)
+library(reactable)
 
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
@@ -32,7 +33,11 @@ orgs_raw <- read_excel("orgs_master.xlsx") |>
 
   met_pallete_geo <- MetBrewer::met.brewer(name="Isfahan2",n=20)
   met_pallete_geo <- as.character(met_pallete_geo)
+  
+reactable(orgs_raw)
 ```
+
+## Map
 
 ```{r, mapview}
 
@@ -58,5 +63,43 @@ map <- leaflet(orgs_raw) %>%
 
 # print map widget
 map
+
+```
+
+## Types
+
+```{r}
+unique(orgs_raw$type)
+```
+
+## Subcategories
+
+-   water and treatment providers
+
+    -   CO, City
+
+-   regulators and monitors
+
+-   NGO and government Researchers
+
+    -   NGO
+
+-   Water body and/or land manager
+
+    -   CRD, DD,
+
+It's real unclear what everything is.....
+
+```{r sub}
+subs <- orgs_raw
+
+subs <- subs |> 
+  mutate(sector = case_when(
+    type == "NGO" ~ "NGOs and Researchers",
+    type == "CO" ~ "Water and Treatment Provider",
+    TRUE ~ ""
+  ))
+
+
 
 ```
