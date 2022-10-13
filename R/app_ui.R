@@ -17,6 +17,7 @@ app_ui <- function(request) {
     ),
     fluidPage(
       theme = bslib::bs_theme(
+        version = 4,
         bg = "#264D96",
         fg = "#FFFFFF",
         primary = "#2BADBD",
