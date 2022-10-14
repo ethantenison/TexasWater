@@ -80,10 +80,12 @@ mod_controls_ui <- function(id) {
             "Aquifers",
             "Counties",
             "Ground Water Conservation Districts" = "GCDs",
+            "Public Water Service" = "PWS",
             "Regional Water Planning Groups" = "RWPGs",
             "Regional Flood Planning Groups" ="RFPGs",
             "Rivers",
-            "River Basins"
+            "River Basins", 
+            "Soil and Water Conservation Districts" = "SWCD"
           ),
           multiple  = FALSE,
           selected = "River Basins",

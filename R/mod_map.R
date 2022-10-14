@@ -44,6 +44,10 @@ mod_map_server <- function(id,data,geo, focus, search) {
         readRDS("./data/counties.rds")
       } else if (geo() == "RFPGs") {
         readRDS("./data/fg.rds")
+      } else if (geo() == "PWS") {
+        readRDS("./data/pws.rds")
+      } else if (geo() == "SWCD") {
+        readRDS("./data/swcd.rds")        
       }
     })
     # Color Palettes -----------------------------------------------------

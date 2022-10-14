@@ -116,8 +116,6 @@ wordcloud(words = df$word,
 
 Crazy oblong boundaries
 
-**NOTE** Since rmapshaper isn't available for the newest version of R, it's important to just leave these old shapefiles the same
-
 ```{r gcds, echo=FALSE}
 gcd <-
   st_read("data-raw/shapefiles/GCD_Shapefiles/TWDB_GCD_NOV2019.shp") |> 
