@@ -17,6 +17,8 @@ library(readxl)
 library(sf)
 library(leaflet)
 library(reactable)
+library(googlesheets4)
+library(tidygeocoder)
 
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
@@ -28,7 +30,7 @@ You can add options to executable code like this
 ```{r}
 #| echo: false
 
-orgs_raw <- read_excel("orgs_master.xlsx") |> 
+orgs_raw <- read_sheet('https://docs.google.com/spreadsheets/d/1-F1iy0egi3q7WtNyn4MvTwsoLeRYCRLowGQgdrG0_cM/edit?usp=sharing') |> 
   clean_names()
 
   met_pallete_geo <- MetBrewer::met.brewer(name="Isfahan2",n=20)
@@ -72,33 +74,36 @@ map
 unique(orgs_raw$type)
 ```
 
-## Subcategories
+## Definitions
 
--   water and treatment providers
+```{r defs}
 
-    -   CO, City
+defs_raw <- read_sheet('https://docs.google.com/spreadsheets/d/10qLQl-JBvuOY-apBOAOKZEbz4xPcl7mOya0eMbMePss/edit?usp=sharing') |> 
+  clean_names()
 
--   regulators and monitors
+```
 
--   NGO and government Researchers
-
-    -   NGO
-
--   Water body and/or land manager
-
-    -   CRD, DD,
-
-It's real unclear what everything is.....
+Categorizing master list
 
 ```{r sub}
-subs <- orgs_raw
 
-subs <- subs |> 
-  mutate(sector = case_when(
-    type == "NGO" ~ "NGOs and Researchers",
-    type == "CO" ~ "Water and Treatment Provider",
-    TRUE ~ ""
-  ))
+cat <- defs_raw |>
+  select(type_acronym, category)
+
+orgs <- orgs_raw |>
+  left_join(cat, by = c('type' = 'type_acronym')) |>
+  mutate(
+    category = case_when(is.na(category) ~ 'Other',
+                         TRUE ~ category),
+    search = category,
+    county = case_when(
+      county == ''
+    ) |> 
+    county_name = paste0(county, " ", "County,TX")
+  ) #|> 
+  #tidygeocoder::geocode(address =  county_name, method = "osm") 
+  # rename('lat' = 'latitude',
+  #        'lon' = 'longitude')
 
 
 
