@@ -100,11 +100,11 @@ orgs <- orgs_raw |>
       county == ''
     ) |> 
     county_name = paste0(county, " ", "County,TX")
-  ) #|> 
+  ) #|> honestly we need to separate unique(county) to get the zip
   #tidygeocoder::geocode(address =  county_name, method = "osm") 
   # rename('lat' = 'latitude',
   #        'lon' = 'longitude')
 
-
+###### Need to create an all column for search in table with category
 
 ```
