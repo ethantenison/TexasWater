@@ -96,15 +96,18 @@ orgs <- orgs_raw |>
     category = case_when(is.na(category) ~ 'Other',
                          TRUE ~ category),
     search = category,
-    county = case_when(
-      county == ''
-    ) |> 
     county_name = paste0(county, " ", "County,TX")
-  ) #|> honestly we need to separate unique(county) to get the zip
-  #tidygeocoder::geocode(address =  county_name, method = "osm") 
-  # rename('lat' = 'latitude',
-  #        'lon' = 'longitude')
+  )
 
-###### Need to create an all column for search in table with category
+```
 
+## Getting long lat of counties
+
+```{r}
+
+#you have to put this in the console......tf
+# county_lonlat <- read_csv("data/county_lonlat.csv")
+# library(tidyverse)
+# orgs -> orgs |> 
+#   left_join(county_lonlat, by = c('county' = 'County'))
 ```
